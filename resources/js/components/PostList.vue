@@ -7,7 +7,7 @@
       justify="center"
       no-gutters
     >
-      <tweet-post :post="post"></tweet-post>
+      <post-item :post="post"></post-item>
     </v-row>
     <v-row
       justify="center"
@@ -27,17 +27,17 @@
       class="mb-8"
       no-gutters
     >
-      <v-divider></v-divider><span class="text-overline mx-4">No more tweets</span><v-divider></v-divider>
+      <v-divider></v-divider><span class="text-overline mx-4">No more posts</span><v-divider></v-divider>
     </v-row>
   </div>
 </template>
 
 <script>
-import TweetPost from './TweetPost';
+import PostItem from './PostItem';
 
 export default {
   components: {
-    TweetPost,
+    PostItem,
   },
   data () {
     return {
@@ -47,17 +47,17 @@ export default {
     }
   },
   created () {
-    this.fetchLatestTweets();
+    this.fetchLatestPosts();
   },
   mounted () {
     this.listenScroll();
-    this.$root.$on('reloadTweets', () => {
+    this.$root.$on('reloadPosts', () => {
       this.isEmptyResult = false;
-      this.fetchLatestTweets(true);
+      this.fetchLatestPosts(true);
     });
   },
   methods: {
-    fetchLatestTweets (reset = false) {
+    fetchLatestPosts (reset = false) {
       this.isLoading = true;
 
       axios.get('/api/posts/' + (this.$route.params.username ?? ''), {
@@ -84,7 +84,7 @@ export default {
       window.onscroll = () => {
         let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
         if (!this.isEmptyResult && !this.isLoading && bottomOfWindow) {
-          this.fetchLatestTweets();
+          this.fetchLatestPosts();
         }
       }
     }

@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import {mapActions} from 'vuex';
+import { mapActions } from 'vuex';
 
 export default {
   props: ['post'],
@@ -56,7 +56,7 @@ export default {
       axios.delete('/api/posts/' + this.post.id)
         .then(res => {
           this.setAlertSuccess(res.data.message);
-          this.$root.$emit('reloadTweets');
+          this.$root.$emit('reloadPosts');
         })
         .catch(err => {
           this.setAlertError(err.response.data);

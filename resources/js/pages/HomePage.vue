@@ -25,13 +25,13 @@
           no-gutters
           class="mb-10"
         >
-          <tweet-post-form></tweet-post-form>
+          <post-form></post-form>
         </v-row>
         <v-row
           justify="center"
           no-gutters
         >
-          <tweet-list></tweet-list>
+          <post-list></post-list>
         </v-row>
       </v-col>
       <v-col></v-col>
@@ -41,14 +41,14 @@
 
 <script>
 import ProfileUserDetails from '../components/ProfileUserDetails';
-import TweetPostForm from '../components/TweetPostForm';
-import TweetList from '../components/TweetList';
+import PostForm from '../components/PostForm';
+import PostList from '../components/PostList';
 
 export default {
   components: {
     ProfileUserDetails,
-    TweetPostForm,
-    TweetList,
+    PostForm,
+    PostList,
   }
 }
 </script>

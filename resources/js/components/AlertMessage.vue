@@ -11,7 +11,11 @@
         text
         v-bind="attrs"
         @click="hideAlert"
-      >Close</v-btn>
+      >
+      <v-icon>
+        mdi-close
+      </v-icon>
+      </v-btn>
     </template>
   </v-snackbar>
 </template>

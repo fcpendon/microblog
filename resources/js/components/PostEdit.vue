@@ -13,16 +13,16 @@
       ><v-icon>mdi-pencil</v-icon>
       </v-btn>
     </template>
-    <tweet-post-form v-if="dialog" :post="post" @closeDialog="closeDialog"></tweet-post-form>
+    <post-form v-if="dialog" :post="post" @closeDialog="closeDialog"></post-form>
   </v-dialog>
 </template>
 
 <script>
-import TweetPostForm from './TweetPostForm';
+import PostForm from './PostForm';
 
 export default {
   components: {
-    TweetPostForm,
+    PostForm,
   },
   props: ['post'],
   data () {

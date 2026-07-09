@@ -64,8 +64,8 @@
 </template>
 
 <script>
-import {mapActions} from 'vuex';
-import {userForm} from '../utils/rules';
+import { mapActions } from 'vuex';
+import { userForm } from '../utils/rules';
 
 export default {
 data () {

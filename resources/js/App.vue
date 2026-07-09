@@ -1,5 +1,5 @@
 <template>
-  <v-app style="background: beige">
+  <v-app style="background: lightgray">
     <navigation-bar v-if="$store.state.authenticated"></navigation-bar>
     <v-main>
       <alert-message></alert-message>

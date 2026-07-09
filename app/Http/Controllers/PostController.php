@@ -39,12 +39,12 @@ class PostController extends Controller
             $this->postService->create($data);
         } catch (Exception $e) {
             return response()->json([
-                'message' => 'Post tweet failed: ' . $e->getMessage(),
+                'message' => 'Create post failed: ' . $e->getMessage(),
             ], 422);
         }
 
         return response()->json([
-            'message' => 'Post tweet successful!',
+            'message' => 'Create post successful!',
         ]);
     }
 
@@ -61,12 +61,12 @@ class PostController extends Controller
             $this->postService->update($request->id, $data);
         } catch (Exception $e) {
             return response()->json([
-                'message' => 'Update tweet failed: ' . $e->getMessage(),
+                'message' => 'Update post failed: ' . $e->getMessage(),
             ], 422);
         }
 
         return response()->json([
-            'message' => 'Update tweet successful!',
+            'message' => 'Update post successful!',
         ]);
     }
 
@@ -80,12 +80,12 @@ class PostController extends Controller
             $this->postService->delete($request->id);
         } catch (Exception $e) {
             return response()->json([
-                'message' => 'Delete tweet failed: ' . $e->getMessage(),
+                'message' => 'Delete post failed: ' . $e->getMessage(),
             ], 422);
         }
 
         return response()->json([
-            'message' => 'Delete tweet successful!',
+            'message' => 'Delete post successful!',
         ]);
     }
 

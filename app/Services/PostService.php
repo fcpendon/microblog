@@ -80,7 +80,7 @@ class PostService
         $post = $this->findOwnPost($post_id);
 
         if (!$post) {
-            throw new InvalidArgumentException('This tweet does not belong to you');
+            throw new InvalidArgumentException('This post does not belong to you');
         }
 
         $post->update($data);
@@ -113,7 +113,7 @@ class PostService
         $post = Auth::user()->posts()->find($post_id);
 
         if (!$post) {
-            throw new InvalidArgumentException('This tweet does not belong to you');
+            throw new InvalidArgumentException('This post does not belong to you');
         }
 
         return $post;

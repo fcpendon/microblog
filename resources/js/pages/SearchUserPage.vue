@@ -25,7 +25,7 @@
               :to="{ name: 'profile', params: { username: user.username }}"
               class="text-decoration-none"
             >
-              <v-hover v-slot="{hover}">
+              <v-hover v-slot="hover">
                 <v-card
                   width="100%"
                   class="transition-swing"

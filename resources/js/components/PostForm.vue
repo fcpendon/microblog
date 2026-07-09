@@ -75,11 +75,11 @@
 
 <script>
 import ImagePlaceholder from './ImagePlaceholder';
-import {mapActions} from 'vuex';
-import {postForm} from '../utils/rules';
+import { mapActions } from 'vuex';
+import { postForm } from '../utils/rules';
 
 export default {
-  components: {ImagePlaceholder},
+  components: { ImagePlaceholder },
   props: ['post'],
   data () {
     return {
@@ -138,7 +138,7 @@ export default {
           .then(res => {
             this.setAlertSuccess(res.data.message);
             this.resetForm();
-            this.$root.$emit('reloadTweets');
+            this.$root.$emit('reloadPosts');
           })
           .catch(err => {
             this.setAlertError(err.response.data);

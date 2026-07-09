@@ -46,8 +46,8 @@
 
 <script>
 import ImagePlaceholder from '../components/ImagePlaceholder';
-import {postForm} from '../utils/rules';
-import {mapActions} from 'vuex';
+import { postForm } from '../utils/rules';
+import { mapActions } from 'vuex';
 
 export default {
   components: {

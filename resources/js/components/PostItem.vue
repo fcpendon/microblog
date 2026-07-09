@@ -46,10 +46,10 @@
       </v-col>
     </v-row>
     <v-card-actions class="mb-n4 mx-n4 justify-space-between">
-      <tweet-post-like :post="post"></tweet-post-like>
+      <post-like :post="post"></post-like>
       <div v-if="isOwnPost(post.author.username)">
-        <tweet-post-edit :post="post"></tweet-post-edit>
-        <tweet-post-delete :post="post"></tweet-post-delete>
+        <post-edit :post="post"></post-edit>
+        <post-delete :post="post"></post-delete>
       </div>
     </v-card-actions>
   </v-card>
@@ -57,17 +57,17 @@
 
 <script>
 import ImagePlaceholder from './ImagePlaceholder';
-import TweetPostEdit from './TweetPostEdit';
-import TweetPostDelete from './TweetPostDelete';
-import TweetPostLike from './TweetPostLike';
-import {mapActions} from 'vuex';
+import PostEdit from './PostEdit';
+import PostDelete from './PostDelete';
+import PostLike from './PostLike';
+import { mapActions } from 'vuex';
 
 export default {
   components: {
     ImagePlaceholder,
-    TweetPostEdit,
-    TweetPostDelete,
-    TweetPostLike,
+    PostEdit,
+    PostDelete,
+    PostLike,
   },
   props: ['post'],
   data () {

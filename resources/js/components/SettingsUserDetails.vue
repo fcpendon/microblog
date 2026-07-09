@@ -46,8 +46,8 @@
 </template>
 
 <script>
-import {userForm} from '../utils/rules';
-import {mapActions} from 'vuex';
+import { userForm } from '../utils/rules';
+import { mapActions } from 'vuex';
 
 export default {
   props: ['user'],
