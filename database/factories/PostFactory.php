@@ -19,7 +19,7 @@ class PostFactory extends Factory
     {
         return [
             'author_id' => User::factory(),
-            'content' => $this->faker->sentence(),
+            'content' => $this->faker->realText(150),
             'created_at' => $this->faker->dateTimeBetween('-1 month', 'now'),
             'updated_at' => fn (array $attributes) => $attributes['created_at'],
         ];
