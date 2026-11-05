@@ -1,48 +1,33 @@
 <template>
-  <v-container>
-    <v-row justify="center" class="mt-8">
-      <v-col cols="auto">
-        <v-card width="700" tile>
-          <v-card
-            dark
-            tile
-            flat
-            height="150"
-            class="d-flex justify-center"
-          >
-            <v-card-title class="text-h2">Settings</v-card-title>
-          </v-card>
-          <v-divider></v-divider>
-          <v-row no-gutters>
-            <v-col cols="auto">
-              <settings-user-avatar :image="user.image"></settings-user-avatar>
-            </v-col>
-            <v-col>
-              <v-row no-gutters>
-                <v-col>
-                  <settings-user-details :user="user"></settings-user-details>
-                </v-col>
-              </v-row>
-              <v-row
-                v-if="user.accountType === 0"
-                no-gutters
-              >
-                <v-col>
-                  <settings-user-password :user="user"></settings-user-password>
-                </v-col>
-              </v-row>
-            </v-col>
-          </v-row>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+  <section class="mx-auto w-full max-w-4xl">
+    <header class="mb-6">
+      <p class="m-0 text-xs font-bold uppercase tracking-[0.14em] text-[var(--color-brand)]">Account</p>
+      <h1 class="mb-0 mt-1 text-2xl font-bold tracking-tight text-[var(--color-ink)]">Settings</h1>
+      <p class="mb-0 mt-2 text-sm text-[var(--color-muted)]">Manage your profile and sign-in details.</p>
+    </header>
+    <div class="grid grid-cols-1 gap-5 lg:grid-cols-[18rem_minmax(0,1fr)]">
+      <section class="self-start rounded-2xl border border-[var(--color-line)] bg-white p-5">
+        <h2 class="mb-4 mt-0 text-sm font-bold text-[var(--color-ink)]">Profile photo</h2>
+        <settings-user-avatar :image="user.image" />
+      </section>
+      <div class="space-y-5">
+        <section class="rounded-2xl border border-[var(--color-line)] bg-white p-5 sm:p-6">
+          <h2 class="mb-4 mt-0 text-sm font-bold text-[var(--color-ink)]">Personal details</h2>
+          <settings-user-details :user="user" />
+        </section>
+        <section class="rounded-2xl border border-[var(--color-line)] bg-white p-5 sm:p-6">
+          <h2 class="mb-4 mt-0 text-sm font-bold text-[var(--color-ink)]">Password</h2>
+          <settings-user-password />
+        </section>
+      </div>
+    </div>
+  </section>
 </template>
 
 <script>
-import SettingsUserAvatar from '../components/SettingsUserAvatar';
-import SettingsUserDetails from '../components/SettingsUserDetails';
-import SettingsUserPassword from '../components/SettingsUserPassword';
+import SettingsUserAvatar from '../components/SettingsUserAvatar.vue';
+import SettingsUserDetails from '../components/SettingsUserDetails.vue';
+import SettingsUserPassword from '../components/SettingsUserPassword.vue';
 
 export default {
   components: {
@@ -69,7 +54,6 @@ export default {
         name: this.$store.state.user.name,
         username: this.$store.state.user.username,
         image: this.$store.state.user.public_image_path,
-        accountType: this.$store.state.user.account_type,
       }
     }
   }

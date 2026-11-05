@@ -1,25 +1,18 @@
 <template>
-  <v-sheet
-    :color="image ? 'black' : 'transparent'"
-    :width="maxSize"
-    tile
+  <div
+    class="grid shrink-0 place-items-center overflow-hidden rounded-2xl bg-[var(--color-highlight)] text-[var(--color-brand)]"
+    :style="{ width: `${maxSize}px`, height: `${maxSize}px`, maxWidth: '100%' }"
   >
-    <v-img
-      v-if="image"
-      :src="image"
-      :width="maxSize"
-      :height="maxSize"
-      contain
-    ></v-img>
-    <v-icon
-      v-else
-      :size="maxSize"
-    >mdi-account-box</v-icon>
-  </v-sheet>
+    <img v-if="image" class="h-full w-full object-cover" :src="image" alt="" />
+    <UserRound v-else :size="Math.min(maxSize * 0.45, 56)" stroke-width="1.5" aria-hidden="true" />
+  </div>
 </template>
 
 <script>
+import { UserRound } from '@lucide/vue';
+
 export default {
+  components: { UserRound },
   props: {
     image: String,
     maxSize: Number,

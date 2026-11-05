@@ -5,6 +5,7 @@ services:
             dockerfile: Dockerfile
             args:
                 WWWGROUP: '${WWWGROUP}'
+                NODE_VERSION: '22'
         image: sail-8.2/app
         extra_hosts:
             - 'host.docker.internal:host-gateway'
@@ -17,6 +18,7 @@ services:
             XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
             XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
             IGNITION_LOCAL_SITES_PATH: '${PWD}'
+            TZ: '${APP_TIMEZONE}'
         volumes:
             - '.:/var/www/html'
         networks:
@@ -34,6 +36,7 @@ services:
             MYSQL_USER: '${DB_USERNAME}'
             MYSQL_PASSWORD: '${DB_PASSWORD}'
             MYSQL_ALLOW_EMPTY_PASSWORD: 1
+            TZ: '${APP_TIMEZONE}'
         volumes:
             - 'sail-mysql:/var/lib/mysql'
             - './vendor/laravel/sail/database/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'

@@ -13,17 +13,14 @@ class LoginService
 
     /**
      * @param array $data
-     * @return string
      */
-    public function attemptLoginUser(array $data): string
+    public function attemptLoginUser(array $data): void
     {
-        $user = $this->getUser($data);
+        $this->getUser($data);
 
         if (!Auth::attempt($data)) {
             throw new InvalidArgumentException('Oops, your password is incorrect');
         }
-
-        return $user->createToken('auth-token')->plainTextToken;
     }
 
     /**

@@ -1,73 +1,37 @@
 <template>
-  <v-card flat>
-    <v-card
-      v-if="isEditing"
-      class="ma-4 mt-0 pa-4"
-      color="grey lighten-4"
-      flat
-    >
-      <v-form
-        ref="form"
-        @submit.prevent="validate"
-      >
-        <v-text-field
-          v-model="form.current_password"
-          label="Current Password"
-          :append-icon="showCurrentPassword ? 'mdi-eye' : 'mdi-eye-off'"
-          :type="showCurrentPassword ? 'text' : 'password'"
-          :rules="isEditing ? currentPasswordRules : []"
-          :disabled="!isEditing"
-          @click:append="showCurrentPassword = !showCurrentPassword"
-        ></v-text-field>
-        <v-text-field
-          v-model="form.password"
-          label="New Password"
-          :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-          :type="showPassword ? 'text' : 'password'"
-          :rules="isEditing ? rules.password : []"
-          :disabled="!isEditing"
-          @click:append="showPassword = !showPassword"
-        ></v-text-field>
-        <v-text-field
-          v-model="form.password_confirmation"
-          label="Confirm Password"
-          type="password"
-          :rules="isEditing ? confirmPasswordRules : []"
-          :disabled="!isEditing"
-        ></v-text-field>
-        <div class="d-flex justify-end mt-4">
-          <v-btn
-            @click="toggleEditable"
-            plain
-          >Cancel</v-btn>
-          <span class="mx-1"></span>
-          <v-btn
-            type="submit"
-            color="primary"
-            :disabled="disableUpdate"
-          >Update</v-btn>
-        </div>
-      </v-form>
-    </v-card>
-    <v-card
-      v-else
-      class="d-flex justify-end mx-4"
-      flat
-    >
-      <v-btn
-        @click="toggleEditable"
-        color="error"
-      >Change Password</v-btn>
-    </v-card>
-  </v-card>
+  <div>
+    <form v-if="isEditing" ref="form" class="space-y-4" @submit.prevent="validate">
+      <label class="block text-sm font-semibold text-[var(--color-ink)]" for="current-password">Current password</label>
+      <div class="relative">
+        <input id="current-password" v-model="form.current_password" name="current_password" :type="showCurrentPassword ? 'text' : 'password'" autocomplete="current-password" class="block h-11 w-full rounded-xl border border-[var(--color-line)] bg-white px-3 pr-11 text-sm outline-none focus:border-[var(--color-brand)]" />
+        <button type="button" class="absolute inset-y-0 right-0 grid w-11 place-items-center text-[var(--color-muted)] hover:text-[var(--color-ink)]" :aria-label="showCurrentPassword ? 'Hide current password' : 'Show current password'" @click="showCurrentPassword = !showCurrentPassword"><Eye v-if="!showCurrentPassword" :size="17" /><EyeOff v-else :size="17" /></button>
+      </div>
+      <label class="block text-sm font-semibold text-[var(--color-ink)]" for="new-password">New password</label>
+      <div class="relative">
+        <input id="new-password" v-model="form.password" name="password" :type="showPassword ? 'text' : 'password'" autocomplete="new-password" class="block h-11 w-full rounded-xl border border-[var(--color-line)] bg-white px-3 pr-11 text-sm outline-none focus:border-[var(--color-brand)]" />
+        <button type="button" class="absolute inset-y-0 right-0 grid w-11 place-items-center text-[var(--color-muted)] hover:text-[var(--color-ink)]" :aria-label="showPassword ? 'Hide new password' : 'Show new password'" @click="showPassword = !showPassword"><Eye v-if="!showPassword" :size="17" /><EyeOff v-else :size="17" /></button>
+      </div>
+      <label class="block text-sm font-semibold text-[var(--color-ink)]" for="confirm-password">Confirm new password</label>
+      <input id="confirm-password" v-model="form.password_confirmation" name="password_confirmation" type="password" autocomplete="new-password" class="block h-11 w-full rounded-xl border border-[var(--color-line)] bg-white px-3 text-sm outline-none focus:border-[var(--color-brand)]" />
+      <div class="flex justify-end gap-2 pt-2">
+        <button type="button" class="h-10 rounded-xl px-4 text-sm font-semibold text-[var(--color-muted)] hover:bg-[var(--color-canvas)]" @click="toggleEditable">Cancel</button>
+        <button type="submit" class="h-10 rounded-xl bg-[var(--color-brand)] px-4 text-sm font-bold text-white hover:bg-[var(--color-brand-dark)] disabled:opacity-60" :disabled="disableUpdate">Update password</button>
+      </div>
+    </form>
+    <div v-else class="flex justify-end">
+      <button type="button" class="h-10 rounded-xl border border-[var(--color-line)] px-4 text-sm font-bold text-[var(--color-ink)] hover:bg-[var(--color-canvas)]" @click="toggleEditable">Change password</button>
+    </div>
+  </div>
 </template>
 
 <script>
 import { userForm } from '../utils/rules';
 import { mapActions } from 'vuex';
+import validateForm from '../utils/validation';
+import { Eye, EyeOff } from '@lucide/vue';
 
 export default {
-  props: ['user'],
+  components: { Eye, EyeOff },
   data () {
     return {
       form: {
@@ -110,7 +74,12 @@ export default {
     validate () {
       this.disableUpdate = true;
 
-      if (this.$refs.form.validate()) {
+      const fields = {
+        current_password: this.currentPasswordRules,
+        password: this.rules.password,
+        password_confirmation: this.confirmPasswordRules,
+      };
+      if (validateForm(this.$refs.form, fields, this.form)) {
         axios.post('/api/settings/password', this.form)
           .then(res => {
             this.setAlertSuccess(res.data.message);

@@ -27,7 +27,3 @@ export const postForm = {
   ],
 }
 
-export default {
-  namespaced: true,
-  userForm
-}

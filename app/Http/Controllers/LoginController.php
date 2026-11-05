@@ -21,7 +21,8 @@ class LoginController extends Controller
         $data = $request->validated();
 
         try {
-            $token = $this->loginService->attemptLoginUser($data);
+            $this->loginService->attemptLoginUser($data);
+            $request->session()->regenerate();
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Login failed: ' . $e->getMessage(),
@@ -30,7 +31,6 @@ class LoginController extends Controller
 
         return response()->json([
             'message' => 'Login successful!',
-            'token' => $token
         ]);
     }
 }

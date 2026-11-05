@@ -1,11 +1,9 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
+import { createStore } from 'vuex';
 
-Vue.use(Vuex)
-
-const store = new Vuex.Store({
+const store = createStore({
   state: {
     authenticated: false,
+    authInitialized: false,
     user: {},
     alert: {
       show: false,
@@ -16,6 +14,9 @@ const store = new Vuex.Store({
   mutations: {
     setAuthenticated(state, payload) {
       state.authenticated = payload;
+    },
+    setAuthInitialized(state, payload) {
+      state.authInitialized = payload;
     },
     setUser(state, payload) {
       state.user = payload;
@@ -30,19 +31,25 @@ const store = new Vuex.Store({
     }
   },
   actions: {
-    getUser({ commit }) {
+    getUser({ commit, state }, { force = false } = {}) {
+      if (state.authInitialized && !force) {
+        return Promise.resolve(state.authenticated);
+      }
+
       return axios.get('/api/user')
         .then(res => {
-          if (res.data) {
-            commit('setUser', res.data);
-            commit('setAuthenticated', true);
-          } else {
-            commit('setUser', {});
-            commit('setAuthenticated', false);
-          }
+          const authenticated = Boolean(res.data);
+          commit('setUser', res.data || {});
+          commit('setAuthenticated', authenticated);
+          return authenticated;
         })
-        .catch(err => {
-          console.log(err);
+        .catch(() => {
+          commit('setUser', {});
+          commit('setAuthenticated', false);
+          return false;
+        })
+        .finally(() => {
+          commit('setAuthInitialized', true);
         });
     },
     setAlertSuccess({ commit }, payload) {

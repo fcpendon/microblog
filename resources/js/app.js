@@ -1,21 +1,14 @@
-require('./bootstrap');
+import './bootstrap';
 
-// Require Vue
-import Vue from 'vue';
-import vuetify from './vuetify';
+import '../css/app.css';
+import { createApp } from 'vue';
 import router from './router';
 import store from './store';
 import App from './App.vue';
 
-Vue.config.productionTip = false;
-Vue.config.devtools = false;
+const app = createApp(App);
 
-store.dispatch('getUser').then(() => {
-  new Vue({
-    el: '#app',
-    vuetify,
-    router,
-    store,
-    render: h => h(App)
-  });
-});
+app.use(router);
+app.use(store);
+
+app.mount('#app');

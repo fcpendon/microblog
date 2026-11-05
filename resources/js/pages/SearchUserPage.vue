@@ -1,65 +1,35 @@
 <template>
-  <v-container>
-    <v-row justify="center">
-      <v-col cols="auto">
-        <v-row no-gutters>
-          <v-card-text class="text-h5 text-center">
-              Search Results for
-              <span class="font-italic">&ldquo;{{ this.searchString }}&rdquo;</span> :
-            </v-card-text>
-        </v-row>
-        <v-divider class="my-4"></v-divider>
-        <v-sheet width="600"></v-sheet>
-        <v-row
-          v-if="searchResult.length == 0"
-          no-gutters
-        >
-          <v-card-text class="text-h6 font-weight-regular text-center">{{ this.statusMessage }}</v-card-text>
-        </v-row>
-        <v-row
-          v-for="user in searchResult"
-          :key="user.username"
-        >
-          <v-col>
-            <router-link
-              :to="{ name: 'profile', params: { username: user.username }}"
-              class="text-decoration-none"
-            >
-              <v-hover v-slot="hover">
-                <v-card
-                  width="100%"
-                  class="transition-swing"
-                  :color="hover ? 'grey lighten-4' : ''"
-                  tile
-                >
-                  <v-row no-gutters>
-                    <v-col cols="auto">
-                      <image-placeholder
-                        :image="user.public_image_path"
-                        :maxSize="128"
-                      ></image-placeholder>
-                    </v-col>
-                    <v-col>
-                      <v-card-title>{{ user.name }}</v-card-title>
-                      <v-card-subtitle>{{ user.username }}</v-card-subtitle>
-                    </v-col>
-                  </v-row>
-                </v-card>
-              </v-hover>
-            </router-link>
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
-  </v-container>
+  <section class="mx-auto w-full max-w-2xl overflow-hidden border-y border-[var(--color-line)] bg-white sm:rounded-2xl sm:border">
+    <header class="border-b border-[var(--color-line)] px-5 py-5 sm:px-6">
+      <p class="m-0 text-xs font-bold uppercase tracking-[0.14em] text-[var(--color-brand)]">People</p>
+      <h1 class="mb-0 mt-1 break-words text-xl font-bold tracking-tight text-[var(--color-ink)]">Results for “{{ searchString }}”</h1>
+    </header>
+    <div v-if="searchResult.length === 0" class="px-6 py-12 text-center">
+      <p class="m-0 text-sm text-[var(--color-muted)]">{{ statusMessage }}</p>
+    </div>
+    <ul v-else class="m-0 list-none divide-y divide-[var(--color-line)] p-0">
+      <li v-for="user in searchResult" :key="user.username">
+        <router-link :to="{ name: 'profile', params: { username: user.username }}" class="flex items-center gap-4 px-5 py-4 text-[var(--color-ink)] no-underline transition-colors hover:bg-[var(--color-canvas)] sm:px-6">
+          <image-placeholder :image="user.public_image_path" :maxSize="56" />
+          <span class="min-w-0 flex-1">
+            <span class="block truncate text-sm font-bold">{{ user.name }}</span>
+            <span class="mt-0.5 block truncate text-sm text-[var(--color-muted)]">@{{ user.username }}</span>
+          </span>
+          <ArrowUpRight :size="18" class="text-[var(--color-muted)]" aria-hidden="true" />
+        </router-link>
+      </li>
+    </ul>
+  </section>
 </template>
 
 <script>
-import ImagePlaceholder from '../components/ImagePlaceholder';
+import ImagePlaceholder from '../components/ImagePlaceholder.vue';
+import { ArrowUpRight } from '@lucide/vue';
 
 export default {
   components: {
     ImagePlaceholder,
+    ArrowUpRight,
   },
   data () {
     return {
@@ -91,12 +61,6 @@ export default {
         .catch(err => {
           console.log(err);
         });
-    },
-    redirectToUserProfile () {
-      this.$router.push({
-        name: 'profile',
-        params: {username: this.user},
-      });
     },
   }
 }

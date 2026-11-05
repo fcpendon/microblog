@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+  font-family: "DM Sans", "Avenir Next", Avenir, "Segoe UI", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  --color-ink: #172326;
+  --color-muted: #627174;
+  --color-line: #e1e8e6;
+  --color-canvas: #f3f7f5;
+  --color-brand: #087f70;
+  --color-brand-dark: #06665b;
+  --color-highlight: #dff4ed;
+  --color-danger: #b33a3a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  background: var(--color-canvas);
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: "DM Sans", "Avenir Next", Avenir, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer base {
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+
+  button:not(:disabled),
+  input[type="file"]::file-selector-button {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+}
+
+button,
+a,
+input,
+textarea,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:focus-visible {
+  outline: 3px solid rgb(8 127 112 / 35%);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: #bde9dc;
+  color: var(--color-ink);
+}
+
+#app {
+  min-height: 100vh;
+}

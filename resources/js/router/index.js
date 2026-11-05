@@ -1,19 +1,18 @@
-import Vue from 'vue';
-import Router from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 import store from '../store';
-import RegistrationForm from '../pages/RegistrationForm';
-import LoginForm from '../pages/LoginForm';
-import HomePage from '../pages/HomePage';
-import SearchUserPage from '../pages/SearchUserPage';
-import SettingsPage from '../pages/SettingsPage';
-import ProfilePage from '../pages/ProfilePage';
-import PageNotFound from '../pages/PageNotFound';
 
-Vue.use(Router);
+import LoginForm from '../pages/LoginForm.vue';
+import RegistrationForm from '../pages/RegistrationForm.vue';
+import HomePage from '../pages/HomePage.vue';
+import ProfilePage from '../pages/ProfilePage.vue';
+import SettingsPage from '../pages/SettingsPage.vue';
+import SearchUserPage from '../pages/SearchUserPage.vue';
+import PageNotFound from '../pages/PageNotFound.vue';
 
-const router = new Router({
-  mode: 'history',
-  base: process.env.BASE_URL,
+const appName = import.meta.env.VITE_APP_NAME || 'Microblog';
+
+const router = createRouter({
+  history: createWebHistory('/'),
   routes: [
     {
       path: '/login',
@@ -74,27 +73,32 @@ const router = new Router({
       }
     },
     {
-      path: '*',
-      redirect: '404',
+      path: '/:pathMatch(.*)*',
+      redirect: '/404',
     }
   ],
 });
 
-router.beforeEach((to, from, next) => {
-  document.title = `${to.meta.title} - ${process.env.MIX_APP_NAME}`
+router.beforeEach(async (to) => {
+  document.title = `${to.meta.title} - ${appName}`;
+
+  if (!store.state.authInitialized) {
+    await store.dispatch('getUser');
+  }
+
   if (to.meta.middleware === 'guest') {
     if (store.state.authenticated) {
-      next({ name: 'home' });
-    } else {
-      next();
+      return { name: 'home' };
     }
-  } else {
-    if (store.state.authenticated) {
-      next();
-    } else {
-      next({ name: 'login' });
-    }
+
+    return true;
   }
+
+  if (store.state.authenticated) {
+    return true;
+  }
+
+  return { name: 'login' };
 });
 
 export default router;

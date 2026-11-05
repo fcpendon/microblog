@@ -17,7 +17,7 @@ class PostLike extends Model
     protected $fillable = [
         'id',
         'post_id',
-        'liker_id',
+        'user_id',
     ];
 
     public function post()
@@ -27,6 +27,6 @@ class PostLike extends Model
 
     public function liker()
     {
-        return $this->belongsTo(User::class, 'liker_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

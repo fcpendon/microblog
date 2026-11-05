@@ -1,39 +1,23 @@
 <template>
-  <v-container>
-    <v-row v-if="user" class="mt-8">
-      <v-col>
-        <v-row
-          justify="center"
-          no-gutters
-        >
-          <profile-user-details :user="user"></profile-user-details>
-        </v-row>
-      </v-col>
-      <v-col>
-        <v-row
-          v-if="user.username === $store.state.user.username"
-          justify="center"
-          class="mb-10"
-          no-gutters
-        >
-          <post-form></post-form>
-        </v-row>
-        <v-row
-          justify="center"
-          no-gutters
-        >
-          <post-list :user="user"></post-list>
-        </v-row>
-      </v-col>
-      <v-col></v-col>
-    </v-row>
-  </v-container>
+  <div v-if="user" class="mx-auto grid w-full max-w-6xl grid-cols-1 gap-6 lg:grid-cols-[17rem_minmax(0,1fr)]">
+    <aside class="self-start">
+      <profile-user-details :user="user" />
+    </aside>
+    <section class="mx-auto w-full max-w-2xl overflow-hidden border-y border-[var(--color-line)] bg-white sm:rounded-2xl sm:border">
+      <header class="border-b border-[var(--color-line)] px-5 py-4 sm:px-6">
+        <p class="m-0 text-xs font-bold uppercase tracking-[0.14em] text-[var(--color-brand)]">Profile</p>
+        <h1 class="mb-0 mt-1 text-2xl font-bold tracking-tight text-[var(--color-ink)]">{{ user.name }}</h1>
+      </header>
+      <post-form v-if="user.username === $store.state.user.username" class="border-b border-[var(--color-line)]" />
+      <post-list :user="user" />
+    </section>
+  </div>
 </template>
 
 <script>
-import ProfileUserDetails from '../components/ProfileUserDetails';
-import PostForm from '../components/PostForm';
-import PostList from '../components/PostList';
+import ProfileUserDetails from '../components/ProfileUserDetails.vue';
+import PostForm from '../components/PostForm.vue';
+import PostList from '../components/PostList.vue';
 
 export default {
   components: {
@@ -43,8 +27,7 @@ export default {
   },
   data () {
     return {
-      user: null,
-      username: 'test',
+      user: null
     }
   },
   created () {

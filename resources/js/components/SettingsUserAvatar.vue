@@ -1,53 +1,25 @@
 <template>
-  <v-card
-    class="pa-4"
-    flat
-  >
-    <v-card
-      class="pa-1"
-      outlined
-    >
-      <image-placeholder
-        :image="imagePreview"
-        :maxSize="300"
-      ></image-placeholder>
-    </v-card>
-    <v-card
-      class="pt-2"
-      flat
-      max-width="310"
-    >
-      <v-form
-        ref="form"
-        @submit.prevent="validate"
-      >
-        <v-file-input
-          v-model="avatar"
-          :rules="avatar ? rules.image : []"
-          accept="image/gif, image/jpeg, image/jpg, image/png"
-          label="Choose File"
-          dense
-          outlined
-          show-size
-          prepend-icon="mdi-camera"
-          @change="onChange"
-          @click:clear="resetAvatar"
-        ></v-file-input>
-        <v-btn
-          type="submit"
-          color="primary"
-          :disabled="disableUpload"
-          block
-        >Upload</v-btn>
-      </v-form>
-    </v-card>
-  </v-card>
+  <div>
+    <div class="mx-auto mb-5 grid size-40 place-items-center overflow-hidden rounded-2xl bg-[var(--color-canvas)] sm:mx-0">
+      <image-placeholder :image="imagePreview" :maxSize="160" />
+    </div>
+    <form ref="form" class="space-y-3" @submit.prevent="validate">
+      <label for="avatar-upload" class="block text-xs font-bold uppercase tracking-wider text-[var(--color-muted)]">Choose image</label>
+      <input id="avatar-upload" ref="file" name="avatar" type="file" accept="image/gif, image/jpeg, image/jpg, image/png" class="block w-full text-sm text-[var(--color-muted)] file:mr-3 file:rounded-lg file:border-0 file:bg-[var(--color-highlight)] file:px-3 file:py-2 file:text-xs file:font-bold file:text-[var(--color-brand-dark)] hover:file:bg-emerald-100" @change="onChange($event.target.files[0])" />
+      <p v-if="avatar" class="m-0 truncate text-xs text-[var(--color-muted)]">{{ avatar.name }} · {{ (avatar.size / 1024 / 1024).toFixed(2) }} MB</p>
+      <div class="flex gap-2">
+        <button type="submit" class="h-10 flex-1 rounded-xl bg-[var(--color-brand)] px-4 text-sm font-bold text-white hover:bg-[var(--color-brand-dark)] disabled:opacity-60" :disabled="disableUpload || !avatar">Upload photo</button>
+        <button v-if="avatar" type="button" class="h-10 rounded-xl px-3 text-sm font-semibold text-[var(--color-muted)] hover:bg-[var(--color-canvas)]" @click="resetAvatar">Cancel</button>
+      </div>
+    </form>
+  </div>
 </template>
 
 <script>
-import ImagePlaceholder from '../components/ImagePlaceholder';
+import ImagePlaceholder from '../components/ImagePlaceholder.vue';
 import { postForm } from '../utils/rules';
 import { mapActions } from 'vuex';
+import validateForm from '../utils/validation';
 
 export default {
   components: {
@@ -79,12 +51,12 @@ export default {
     validate () {
       this.disableUpload = true;
 
-      if (this.$refs.form.validate()) {
+      if (validateForm(this.$refs.form, { avatar: this.rules.image }, { avatar: this.avatar })) {
         const formData = new FormData();
         formData.append('avatar', this.avatar);
         axios.post('/api/settings/upload-avatar', formData)
           .then(res => {
-            this.getUser()
+            this.getUser({ force: true })
               .then(() => {
                 this.setAlertSuccess(res.data.message);
                 this.resetAvatar();
@@ -101,8 +73,9 @@ export default {
     },
     resetAvatar () {
       this.avatar = null;
-      URL.revokeObjectURL(this.imagePreview);
+      if (this.imagePreview && this.imagePreview.startsWith('blob:')) URL.revokeObjectURL(this.imagePreview);
       this.imagePreview = this.$store.state.user.public_image_path;
+      if (this.$refs.file) this.$refs.file.value = '';
     }
   }
 }
