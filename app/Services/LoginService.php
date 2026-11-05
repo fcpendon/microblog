@@ -14,7 +14,7 @@ class LoginService
     /**
      * @param array $data
      */
-    public function attemptLoginUser(array $data): void
+    public function attemptLoginUser(array $data)
     {
         $this->getUser($data);
 

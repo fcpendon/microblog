@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Illuminate\Http\Resources\Json\JsonResource;
 use InvalidArgumentException;
 
 class UserService
@@ -24,9 +25,9 @@ class UserService
     /**
      * @param string $keyword
      * @param int $limit
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @return JsonResource
      */
-    public function searchByNameOrUsername(string $keyword, int $limit = 100)
+    public function searchByNameOrUsername(string $keyword, int $limit = 100): JsonResource
     {
         $user = User::where('username', 'like', "%{$keyword}%")
             ->orWhere('name', 'like', "%{$keyword}%")
@@ -39,9 +40,9 @@ class UserService
 
     /**
      * @param string $username
-     * @return mixed
+     * @return User | null
      */
-    public function getByUsername(string $username)
+    public function getByUsername(string $username): User | null
     {
         return User::where('username', $username)->first();
     }

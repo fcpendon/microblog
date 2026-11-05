@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
+use App\Models\Traits\HasImagePathAttribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class PostImage extends Model
 {
-    use HasFactory;
+    use HasFactory, HasImagePathAttribute;
 
     /**
      * The attributes that are mass assignable.
@@ -26,10 +26,5 @@ class PostImage extends Model
     public function post()
     {
         return $this->belongsTo(Post::class, 'post_id');
-    }
-
-    public function getPublicImagePathAttribute()
-    {
-        return $this->image_path ? '/storage/' . $this->image_path : null;
     }
 }

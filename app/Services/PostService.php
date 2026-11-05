@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Http\Resources\PostResource;
 use App\Models\Post;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
 use InvalidArgumentException;
 
@@ -18,19 +19,19 @@ class PostService
      * @param string $username
      * @param int $offset
      * @param int $limit
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @return JsonResource
      */
-    public function getPosts(string $username, int $offset, int $limit)
+    public function getPosts(string $username, int $offset, int $limit): JsonResource
     {
         $post = Post::when($username, function ($query, $username) {
-                return $query->whereRelation('author', 'username', $username);
-            })
+            return $query->whereRelation('author', 'username', $username);
+        })
             ->latest()
             ->with(['author:id,name,username,image_path', 'images'])
             ->with(['likers' => function ($query) {
                 $query->select('user_id')
                     ->where('user_id', Auth::user()->id);
-                }])
+            }])
             ->withCount('likes')
             ->offset($offset)
             ->limit($limit)
@@ -63,7 +64,7 @@ class PostService
      */
     public function create(array $data)
     {
-        $post = Auth::user()->posts()->create($data);
+        $post = Post::create([...$data, 'author_id' => Auth::id()]);
 
         if ($data['image']) {
             $this->postImageService->create($post, $data['image']);
@@ -110,7 +111,7 @@ class PostService
      */
     public function findOwnPost(int $post_id)
     {
-        $post = Auth::user()->posts()->find($post_id);
+        $post = Post::find(['author_id' => Auth::id()]);
 
         if (!$post) {
             throw new InvalidArgumentException('This post does not belong to you');

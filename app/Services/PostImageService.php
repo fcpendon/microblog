@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Post;
+use Illuminate\Http\UploadedFile;
 
 class PostImageService
 {
@@ -11,10 +12,10 @@ class PostImageService
 
     /**
      * @param Post $post
-     * @param $image
+     * @param UploadedFile $image
      * @return void
      */
-    public function create(Post $post, $image)
+    public function create(Post $post, UploadedFile $image)
     {
         $data['image_path'] = $this->storageService->store($image, 'post_images');
         $post->images()->create($data);
@@ -22,10 +23,10 @@ class PostImageService
 
     /**
      * @param Post $post
-     * @param $image
+     * @param UploadedFile $image
      * @return void
      */
-    public function update(Post $post, $image)
+    public function update(Post $post, UploadedFile $image)
     {
         $this->delete($post);
         $this->create($post, $image);

@@ -4,7 +4,6 @@ namespace App\Services;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
-use InvalidArgumentException;
 
 class SettingsService
 {

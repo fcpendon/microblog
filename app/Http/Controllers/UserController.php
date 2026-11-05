@@ -15,16 +15,19 @@ class UserController extends Controller
 
     /**
      * @param SearchUserRequest $request
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @return JsonResponse
      */
-    public function search(SearchUserRequest $request)
+    public function search(SearchUserRequest $request): JsonResponse
     {
         $data = $request->validated();
 
         $name = $data['name'];
         $limit = $data['limit'] ?? 100;
+        $users = $this->userService->searchByNameOrUsername($name, $limit);
 
-        return $this->userService->searchByNameOrUsername($name, $limit);
+        return response()->json([
+            'data' => $users,
+        ]);
     }
 
     /**

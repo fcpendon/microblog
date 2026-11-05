@@ -16,14 +16,17 @@ class PostController extends Controller
     /**
      * @param Request $request
      * @param string $username
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @return JsonResponse
      */
-    public function get_posts(Request $request, string $username = '')
+    public function get_posts(Request $request, string $username = ''): JsonResponse
     {
         $offset = $request->offset ?? 0;
         $limit = $request->limit ?? 10;
+        $posts = $this->postService->getPosts($username, $offset, $limit);
 
-        return $this->postService->getPosts($username, $offset, $limit);
+        return response()->json([
+            'data' => $posts,
+        ]);
     }
 
     /**

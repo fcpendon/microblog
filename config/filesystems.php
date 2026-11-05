@@ -51,6 +51,7 @@ return [
             'url' => env('AWS_URL'),
             'endpoint' => env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'presigned_url_mins' => env('AWS_PRESIGNED_URL_MINUTES', 15),
         ],
 
     ],

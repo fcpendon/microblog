@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasImagePathAttribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -9,7 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, HasImagePathAttribute, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -40,10 +41,5 @@ class User extends Authenticatable
     public function likes()
     {
         return $this->belongsToMany(Post::class, 'post_likes', 'user_id', 'post_id');
-    }
-
-    public function getPublicImagePathAttribute()
-    {
-        return $this->image_path ? '/storage/' . $this->image_path : null;
     }
 }
