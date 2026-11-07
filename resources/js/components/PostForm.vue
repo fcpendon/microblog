@@ -110,7 +110,7 @@ export default {
             emitter.emit('reloadPosts');
           })
           .catch(err => {
-            this.setAlertError(err.response.data);
+            this.setAlertError(err.response?.data || 'Could not save your post. Please try again.');
           })
           .finally(() => {
             this.disablePost = false;

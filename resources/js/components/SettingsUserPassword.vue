@@ -86,7 +86,7 @@ export default {
             this.toggleEditable();
           })
           .catch(err => {
-            this.setAlertError(err.response.data);
+            this.setAlertError(err.response?.data || 'Could not update your password. Please try again.');
           })
           .finally(() => {
             this.disableUpdate = false;

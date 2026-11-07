@@ -35,6 +35,7 @@ export default {
     ...mapActions({
       getUser: 'getUser',
       setAlertSuccess: 'setAlertSuccess',
+      setAlertError: 'setAlertError',
     }),
     logout () {
       this.disableLogout = true;
@@ -49,7 +50,7 @@ export default {
             });
         })
         .catch(err => {
-          console.log(err);
+          this.setAlertError(err.response?.data || 'Could not sign out. Please try again.');
           this.disableLogout = false;
         });
     },

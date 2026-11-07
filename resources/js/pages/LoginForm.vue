@@ -28,6 +28,7 @@
             <button type="button" class="absolute inset-y-0 right-0 grid w-12 place-items-center text-[var(--color-muted)] hover:text-[var(--color-ink)]" :aria-label="showPassword ? 'Hide password' : 'Show password'" @click="showPassword = !showPassword"><Eye v-if="!showPassword" :size="18" /><EyeOff v-else :size="18" /></button>
           </div>
         </div>
+        <p class="-mt-2 text-right text-sm"><router-link :to="{ name: 'forgot-password' }" class="font-semibold text-[var(--color-brand)] no-underline hover:underline">Forgot password?</router-link></p>
         <button type="submit" class="mt-2 h-12 w-full rounded-xl bg-[var(--color-brand)] text-sm font-bold text-white transition hover:bg-[var(--color-brand-dark)] disabled:opacity-60" :disabled="disableLogin">Sign in</button>
         <p class="mb-0 pt-2 text-center text-sm text-[var(--color-muted)]">New here? <router-link :to="{ name: 'register' }" class="font-bold text-[var(--color-brand)] no-underline hover:underline">Create an account</router-link></p>
       </form>

@@ -12,6 +12,7 @@
         class="h-full min-w-0 flex-1 border-0 bg-transparent p-0 text-sm text-[var(--color-ink)] outline-none placeholder:text-[var(--color-muted)] focus:outline-none"
         aria-autocomplete="list"
         :aria-expanded="!hideNoData"
+        :aria-busy="isLoading"
         aria-controls="user-search-results"
       />
       <span v-if="isLoading" class="size-4 animate-spin rounded-full border-2 border-[var(--color-line)] border-t-[var(--color-brand)]" aria-label="Searching"></span>
@@ -30,8 +31,9 @@
           <ArrowUpLeft :size="15" class="text-[var(--color-muted)]" aria-hidden="true" />
         </button>
       </li>
-      <li v-if="!isLoading && !searchResult.length" class="px-3 py-4 text-center text-sm text-[var(--color-muted)]">No people found</li>
-      <li v-if="searchString.length >= 3" class="border-t border-[var(--color-line)] px-2 pt-1.5">
+      <li v-if="searchError" class="px-3 py-4 text-center text-sm text-[var(--color-danger)]" role="status">{{ searchError }}</li>
+      <li v-else-if="!isLoading && !searchResult.length" class="px-3 py-4 text-center text-sm text-[var(--color-muted)]">No people found</li>
+      <li v-if="searchString && searchString.length >= 3" class="border-t border-[var(--color-line)] px-2 pt-1.5">
         <button type="submit" class="w-full rounded-lg px-2 py-2 text-left text-xs font-semibold text-[var(--color-brand)] hover:bg-[var(--color-highlight)]">Search all results for “{{ searchString }}”</button>
       </li>
     </ul>
@@ -51,16 +53,21 @@ export default {
       searchResult: [],
       isLoading: false,
       hideNoData: true,
+      searchError: '',
+      searchRequestId: 0,
     }
   },
   watch: {
     searchString(text) {
+      this.searchRequestId++;
+      this.searchError = '';
       if (text && text.length >= 3) {
         this.hideNoData = false;
         this.debouncedSearchUser();
       } else {
         this.hideNoData = true;
         this.searchResult = [];
+        this.isLoading = false;
       }
     }
   },
@@ -69,18 +76,22 @@ export default {
       setAlertError: 'setAlertError',
     }),
     searchUser () {
-      if (!this.searchString) {
+      const searchTerm = this.searchString;
+      if (!searchTerm || searchTerm.length < 3) {
         return;
       }
+      const requestId = ++this.searchRequestId;
       this.isLoading = true;
+      this.searchError = '';
 
       axios.get('/api/search-user', {
         params: {
-          name: this.searchString,
+          keyword: searchTerm,
           limit: 10,
         }
       })
         .then(res => {
+          if (requestId !== this.searchRequestId) return;
           if (res.data.data.length !== 0) {
             this.searchResult = Object.values(res.data.data).map(user => {
               return {
@@ -92,11 +103,15 @@ export default {
           } else {
             this.searchResult = [];
           }
-          this.isLoading = false;
           this.hideNoData = false;
         })
-        .catch(err => {
-          console.log(err);
+        .catch(() => {
+          if (requestId !== this.searchRequestId) return;
+          this.searchResult = [];
+          this.searchError = 'Could not search people. Try again.';
+        })
+        .finally(() => {
+          if (requestId === this.searchRequestId) this.isLoading = false;
         });
     },
     redirectToUserProfile (username) {

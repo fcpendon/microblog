@@ -47,7 +47,7 @@ export default {
           emitter.emit('reloadPosts');
         })
         .catch(err => {
-          this.setAlertError(err.response.data);
+          this.setAlertError(err.response?.data || 'Could not delete the post. Please try again.');
         })
         .finally(() => {
           this.disableDelete = false;

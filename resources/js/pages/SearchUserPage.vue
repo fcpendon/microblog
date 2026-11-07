@@ -4,8 +4,9 @@
       <p class="m-0 text-xs font-bold uppercase tracking-[0.14em] text-[var(--color-brand)]">People</p>
       <h1 class="mb-0 mt-1 break-words text-xl font-bold tracking-tight text-[var(--color-ink)]">Results for “{{ searchString }}”</h1>
     </header>
-    <div v-if="searchResult.length === 0" class="px-6 py-12 text-center">
-      <p class="m-0 text-sm text-[var(--color-muted)]">{{ statusMessage }}</p>
+    <div v-if="searchResult.length === 0" class="px-6 py-12 text-center" :role="errorMessage ? 'alert' : 'status'">
+      <p class="m-0 text-sm" :class="errorMessage ? 'text-[var(--color-danger)]' : 'text-[var(--color-muted)]'">{{ errorMessage || statusMessage }}</p>
+      <button v-if="errorMessage" type="button" class="mt-3 rounded-lg px-3 py-2 text-sm font-bold text-[var(--color-brand)] hover:bg-[var(--color-highlight)]" @click="searchUser">Try again</button>
     </div>
     <ul v-else class="m-0 list-none divide-y divide-[var(--color-line)] p-0">
       <li v-for="user in searchResult" :key="user.username">
@@ -36,6 +37,7 @@ export default {
       searchString: '',
       searchResult: [],
       statusMessage: '',
+      errorMessage: '',
     }
   },
   created () {
@@ -45,21 +47,23 @@ export default {
   methods: {
     searchUser () {
       this.statusMessage = 'Fetching search results...';
+      this.errorMessage = '';
 
       axios.get('/api/search-user', {
         params: {
-          name: this.searchString,
+          keyword: this.searchString,
         }
       })
         .then(res => {
           if (res.data.data.length !== 0) {
             this.searchResult = res.data.data;
           } else {
+            this.searchResult = [];
             this.statusMessage = 'No results found.';
           }
         })
-        .catch(err => {
-          console.log(err);
+        .catch(() => {
+          this.errorMessage = 'Could not load search results. Check your connection and try again.';
         });
     },
   }

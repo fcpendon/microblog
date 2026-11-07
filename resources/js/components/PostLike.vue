@@ -15,6 +15,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 import { Heart } from '@lucide/vue';
 
 export default {
@@ -29,6 +30,9 @@ export default {
     }
   },
   methods: {
+    ...mapActions({
+      setAlertError: 'setAlertError',
+    }),
     likePost () {
       axios.post('/api/posts/' + this.post.id + '/like')
         .then(res => {
@@ -36,7 +40,7 @@ export default {
           this.likeCounter = res.data.data.likes;
         })
         .catch(err => {
-          console.log(err);
+          this.setAlertError(err.response?.data || 'Could not update the like. Please try again.');
         });
     },
     unlikePost () {
@@ -46,7 +50,7 @@ export default {
           this.likeCounter = res.data.data.likes;
         })
         .catch(err => {
-          console.log(err);
+          this.setAlertError(err.response?.data || 'Could not update the like. Please try again.');
         });
     }
   }

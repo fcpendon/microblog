@@ -64,7 +64,7 @@ export default {
               });
           })
           .catch(err => {
-            this.setAlertError(err.response.data);
+            this.setAlertError(err.response?.data || 'Could not upload the photo. Please try again.');
             this.disableUpload = false;
           });
       } else {

@@ -19,22 +19,26 @@
         </div>
         <div>
           <label for="register-name" class="mb-1.5 block text-sm font-semibold text-[var(--color-ink)]">Full name</label>
-          <input id="register-name" v-model="form.name" name="name" type="text" maxlength="50" autocomplete="name" autofocus class="block h-11 w-full rounded-xl border border-[var(--color-line)] px-3 text-sm outline-none focus:border-[var(--color-brand)] focus:ring-2 focus:ring-[var(--color-highlight)]" />
+          <input id="register-name" v-model="form.name" name="name" type="text" required maxlength="100" autocomplete="name" autofocus class="block h-11 w-full rounded-xl border border-[var(--color-line)] px-3 text-sm outline-none focus:border-[var(--color-brand)] focus:ring-2 focus:ring-[var(--color-highlight)]" />
         </div>
         <div>
           <label for="register-username" class="mb-1.5 block text-sm font-semibold text-[var(--color-ink)]">Username</label>
-          <input id="register-username" v-model="form.username" name="username" type="text" maxlength="20" autocomplete="username" class="block h-11 w-full rounded-xl border border-[var(--color-line)] px-3 text-sm outline-none focus:border-[var(--color-brand)] focus:ring-2 focus:ring-[var(--color-highlight)]" />
+          <input id="register-username" v-model="form.username" name="username" type="text" required maxlength="20" autocomplete="username" class="block h-11 w-full rounded-xl border border-[var(--color-line)] px-3 text-sm outline-none focus:border-[var(--color-brand)] focus:ring-2 focus:ring-[var(--color-highlight)]" />
+        </div>
+        <div>
+          <label for="register-email" class="mb-1.5 block text-sm font-semibold text-[var(--color-ink)]">Email</label>
+          <input id="register-email" v-model="form.email" name="email" type="email" required maxlength="100" autocomplete="email" class="block h-11 w-full rounded-xl border border-[var(--color-line)] px-3 text-sm outline-none focus:border-[var(--color-brand)] focus:ring-2 focus:ring-[var(--color-highlight)]" />
         </div>
         <div>
           <label for="register-password" class="mb-1.5 block text-sm font-semibold text-[var(--color-ink)]">Password</label>
           <div class="relative">
-            <input id="register-password" v-model="form.password" name="password" :type="showPassword ? 'text' : 'password'" autocomplete="new-password" class="block h-11 w-full rounded-xl border border-[var(--color-line)] px-3 pr-12 text-sm outline-none focus:border-[var(--color-brand)] focus:ring-2 focus:ring-[var(--color-highlight)]" />
+            <input id="register-password" v-model="form.password" name="password" :type="showPassword ? 'text' : 'password'" required minlength="8" maxlength="16" autocomplete="new-password" class="block h-11 w-full rounded-xl border border-[var(--color-line)] px-3 pr-12 text-sm outline-none focus:border-[var(--color-brand)] focus:ring-2 focus:ring-[var(--color-highlight)]" />
             <button type="button" class="absolute inset-y-0 right-0 grid w-12 place-items-center text-[var(--color-muted)] hover:text-[var(--color-ink)]" :aria-label="showPassword ? 'Hide password' : 'Show password'" @click="showPassword = !showPassword"><Eye v-if="!showPassword" :size="17" /><EyeOff v-else :size="17" /></button>
           </div>
         </div>
         <div>
           <label for="register-confirm" class="mb-1.5 block text-sm font-semibold text-[var(--color-ink)]">Confirm password</label>
-          <input id="register-confirm" v-model="form.password_confirmation" name="password_confirmation" type="password" autocomplete="new-password" class="block h-11 w-full rounded-xl border border-[var(--color-line)] px-3 text-sm outline-none focus:border-[var(--color-brand)] focus:ring-2 focus:ring-[var(--color-highlight)]" />
+          <input id="register-confirm" v-model="form.password_confirmation" name="password_confirmation" type="password" required minlength="8" maxlength="16" autocomplete="new-password" class="block h-11 w-full rounded-xl border border-[var(--color-line)] px-3 text-sm outline-none focus:border-[var(--color-brand)] focus:ring-2 focus:ring-[var(--color-highlight)]" />
         </div>
         <button type="submit" class="mt-2 h-11 w-full rounded-xl bg-[var(--color-brand)] text-sm font-bold text-white transition hover:bg-[var(--color-brand-dark)] disabled:opacity-60" :disabled="disableRegister">Create account</button>
         <p class="mb-0 pt-1 text-center text-sm text-[var(--color-muted)]">Already have an account? <router-link :to="{ name: 'login' }" class="font-bold text-[var(--color-brand)] no-underline hover:underline">Sign in</router-link></p>
@@ -56,6 +60,7 @@ data () {
     form: {
       name: '',
       username: '',
+      email: '',
       password: '',
       password_confirmation: '',
     },
@@ -84,7 +89,7 @@ methods: {
           this.$router.push({ name: 'login' });
         })
         .catch(err => {
-          this.setAlertError(err.response.data);
+          this.setAlertError(err.response?.data || 'Could not create your account. Please try again.');
           this.disableRegister = false;
         });
     } else {

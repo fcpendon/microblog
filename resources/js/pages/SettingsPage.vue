@@ -40,6 +40,7 @@ export default {
       user: {
         name: '',
         username: '',
+        email: '',
         image: '',
         accountType: '',
       },
@@ -53,6 +54,7 @@ export default {
       this.user = {
         name: this.$store.state.user.name,
         username: this.$store.state.user.username,
+        email: this.$store.state.user.email,
         image: this.$store.state.user.public_image_path,
       }
     }
