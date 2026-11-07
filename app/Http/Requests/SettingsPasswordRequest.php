@@ -24,9 +24,9 @@ class SettingsPasswordRequest extends FormRequest
     public function rules()
     {
         return [
-            'password' => 'nullable|min:8|max:16|confirmed',
-            'password_confirmation' => 'nullable',
-            'current_password' => 'nullable|current_password',
+            'password' => 'required|min:8|max:16|confirmed',
+            'password_confirmation' => 'required',
+            'current_password' => 'required|current_password',
         ];
     }
 }

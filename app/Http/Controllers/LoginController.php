@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Services\LoginService;
-use Exception;
 use Illuminate\Http\JsonResponse;
+use InvalidArgumentException;
 
 class LoginController extends Controller
 {
@@ -22,12 +22,13 @@ class LoginController extends Controller
 
         try {
             $this->loginService->attemptLoginUser($data);
-            $request->session()->regenerate();
-        } catch (Exception $e) {
+        } catch (InvalidArgumentException $e) {
             return response()->json([
-                'message' => 'Login failed: ' . $e->getMessage(),
-            ], 422);
+                'message' => 'Invalid username or password.',
+            ], JsonResponse::HTTP_UNAUTHORIZED);
         }
+
+        $request->session()->regenerate();
 
         return response()->json([
             'message' => 'Login successful!',

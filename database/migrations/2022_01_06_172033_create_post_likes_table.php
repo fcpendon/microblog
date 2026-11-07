@@ -18,6 +18,8 @@ class CreatePostLikesTable extends Migration
             $table->unsignedInteger('post_id');
             $table->unsignedInteger('user_id');
 
+            $table->unique(['user_id', 'post_id'], 'post_likes_user_post_unique');
+
             $table->foreign('post_id')
                 ->references('id')
                 ->on('posts')

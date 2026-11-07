@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PostRequest;
+use App\Http\Requests\PostIndexRequest;
 use App\Services\PostService;
-use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
+    const POSTS_OFFSET_DEFAULT = 0;
+    const POSTS_LIMIT_DEFAULT = 10;
+
     public function __construct(private PostService $postService)
     {}
 
@@ -18,10 +21,12 @@ class PostController extends Controller
      * @param string $username
      * @return JsonResponse
      */
-    public function get_posts(Request $request, string $username = ''): JsonResponse
+    public function get_posts(PostIndexRequest $request, string $username = ''): JsonResponse
     {
-        $offset = $request->offset ?? 0;
-        $limit = $request->limit ?? 10;
+        $data = $request->validated();
+
+        $offset = $data['offset'] ?? self::POSTS_OFFSET_DEFAULT;
+        $limit = $data['limit'] ?? self::POSTS_LIMIT_DEFAULT;
         $posts = $this->postService->getPosts($username, $offset, $limit);
 
         return response()->json([
@@ -38,17 +43,11 @@ class PostController extends Controller
         $data = $request->validated();
         $data['image'] = $request->file('image') ?? null;
 
-        try {
-            $this->postService->create($data);
-        } catch (Exception $e) {
-            return response()->json([
-                'message' => 'Create post failed: ' . $e->getMessage(),
-            ], 422);
-        }
+        $this->postService->create($data);
 
         return response()->json([
             'message' => 'Create post successful!',
-        ]);
+        ], JsonResponse::HTTP_CREATED);
     }
 
     /**
@@ -60,13 +59,7 @@ class PostController extends Controller
         $data = $request->validated();
         $data['image'] = $request->file('image') ?? null;
 
-        try {
-            $this->postService->update($request->id, $data);
-        } catch (Exception $e) {
-            return response()->json([
-                'message' => 'Update post failed: ' . $e->getMessage(),
-            ], 422);
-        }
+        $this->postService->update($request->id, $data);
 
         return response()->json([
             'message' => 'Update post successful!',
@@ -79,13 +72,7 @@ class PostController extends Controller
      */
     public function destroy(Request $request): JsonResponse
     {
-        try {
-            $this->postService->delete($request->id);
-        } catch (Exception $e) {
-            return response()->json([
-                'message' => 'Delete post failed: ' . $e->getMessage(),
-            ], 422);
-        }
+        $this->postService->delete($request->id);
 
         return response()->json([
             'message' => 'Delete post successful!',
@@ -98,13 +85,7 @@ class PostController extends Controller
      */
     public function like_post(Request $request): JsonResponse
     {
-        try {
-            $result = $this->postService->likePost($request->id);
-        } catch (Exception $e) {
-            return response()->json([
-                'message' => 'Like post failed: ' . $e->getMessage(),
-            ], 422);
-        }
+        $result = $this->postService->likePost($request->id);
 
         return response()->json([
             'message' => 'Like post successful!',
@@ -118,13 +99,7 @@ class PostController extends Controller
      */
     public function unlike_post(Request $request): JsonResponse
     {
-        try {
-            $result = $this->postService->unlikePost($request->id);
-        } catch (Exception $e) {
-            return response()->json([
-                'message' => 'Unlike post failed: ' . $e->getMessage(),
-            ], 422);
-        }
+        $result = $this->postService->unlikePost($request->id);
 
         return response()->json([
             'message' => 'Unlike post successful!',

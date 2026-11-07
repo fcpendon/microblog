@@ -24,7 +24,7 @@ class SettingsAvatarRequest extends FormRequest
     public function rules()
     {
         return [
-            'avatar' => 'nullable|image|max:5000',
+            'avatar' => 'required|image|max:5000',
         ];
     }
 }

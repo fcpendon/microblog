@@ -24,8 +24,9 @@ class SettingsDetailsRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'min:4|max:50',
-            'username' => 'min:4|max:20',
+            'name' => 'min:4|max:100',
+            'username' => 'min:4|max:20|unique:users,username,' . auth()->id(),
+            'email' => 'required|email|max:100|unique:users,email,' . auth()->id(),
         ];
     }
 }

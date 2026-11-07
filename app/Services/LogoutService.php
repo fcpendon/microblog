@@ -18,6 +18,6 @@ class LogoutService
         }
 
         Auth::user()->tokens()->delete();
-        Auth::logout();
+        Auth::guard('web')->logout();
     }
 }

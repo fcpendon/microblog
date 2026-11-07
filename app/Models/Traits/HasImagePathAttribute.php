@@ -14,12 +14,12 @@ trait HasImagePathAttribute
         if (!$this->image_path) {
             return null;
         } elseif (config('filesystems.default') === 's3') {
-            return Storage::temporaryUrl(
+            return Storage::disk('s3')->temporaryUrl(
                 $this->image_path,
                 now()->addMinutes(config('filesystems.disks.s3.presigned_url_mins'))
             );
         }
 
-        return Storage::url($this->image_path);
+        return Storage::disk('public')->url($this->image_path);
     }
 }

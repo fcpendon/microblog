@@ -24,8 +24,8 @@ class SearchUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
-            'limit' => 'nullable|numeric',
+            'name' => 'required|string|min:1|max:100',
+            'limit' => 'nullable|integer|min:1|max:50',
         ];
     }
 }

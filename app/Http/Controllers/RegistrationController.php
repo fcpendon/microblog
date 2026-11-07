@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\RegistrationRequest;
 use App\Services\RegistrationService;
-use Exception;
 use Illuminate\Http\JsonResponse;
 
 class RegistrationController extends Controller
@@ -20,16 +19,11 @@ class RegistrationController extends Controller
     {
         $data = $request->validated();
 
-        try {
-            $this->registrationService->attemptRegisterUser($data);
-        } catch (Exception $e) {
-            return response()->json([
-                'message' => 'Registration failed: ' . $e->getMessage(),
-            ], 422);
-        }
+        $user = $this->registrationService->attemptRegisterUser($data);
+        $user->sendEmailVerificationNotification();
 
         return response()->json([
-            'message' => 'Registration successful!',
-        ]);
+            'message' => 'Registration successful. Check your email for a verification link to finish setting up your account.',
+        ], JsonResponse::HTTP_CREATED);
     }
 }

@@ -6,10 +6,11 @@ use App\Http\Requests\SearchUserRequest;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use InvalidArgumentException;
 
 class UserController extends Controller
 {
+    const SEARCH_USER_LIMIT = 50;
+
     public function __construct(private UserService $userService)
     {}
 
@@ -21,9 +22,9 @@ class UserController extends Controller
     {
         $data = $request->validated();
 
-        $name = $data['name'];
-        $limit = $data['limit'] ?? 100;
-        $users = $this->userService->searchByNameOrUsername($name, $limit);
+        $keyword = $data['keyword'];
+        $limit = $data['limit'] ?? self::SEARCH_USER_LIMIT;
+        $users = $this->userService->searchByNameOrUsername($keyword, $limit);
 
         return response()->json([
             'data' => $users,
@@ -36,12 +37,6 @@ class UserController extends Controller
      */
     public function get_profile(Request $request)
     {
-        try {
-            return $this->userService->getByUsernameResource($request->user);
-        } catch (InvalidArgumentException $e) {
-            return response()->json([
-                'message' => 'User error: ' . $e->getMessage(),
-            ], 422);
-        }
+        return $this->userService->getByUsernameResource($request->user);
     }
 }

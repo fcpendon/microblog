@@ -12,7 +12,7 @@ class PostLikeService
      */
     public function like(int $post_id)
     {
-        Auth::user()->likes()->attach($post_id);
+        Auth::user()->likes()->syncWithoutDetaching([$post_id]);
     }
 
     /**

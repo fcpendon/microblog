@@ -53,7 +53,7 @@ class PostService
                     ->where('user_id', Auth::user()->id);
             }])
             ->withCount('likes')
-            ->first();
+            ->firstOrFail();
 
         return new PostResource($post);
     }
@@ -88,7 +88,7 @@ class PostService
 
         if ($data['image']) {
             $this->postImageService->update($post, $data['image']);
-        } elseif (!$data['old_image']) {
+        } elseif (empty($data['old_image'])) {
             $this->postImageService->delete($post);
         }
     }
@@ -101,6 +101,10 @@ class PostService
     {
         $post = $this->findOwnPost($post_id);
 
+        if (!$post) {
+            throw new InvalidArgumentException('This post does not belong to you');
+        }
+
         $this->postImageService->delete($post);
         $post->delete();
     }
@@ -111,13 +115,9 @@ class PostService
      */
     public function findOwnPost(int $post_id)
     {
-        $post = Post::find(['author_id' => Auth::id()]);
-
-        if (!$post) {
-            throw new InvalidArgumentException('This post does not belong to you');
-        }
-
-        return $post;
+        return Post::whereKey($post_id)
+            ->where('author_id', Auth::id())
+            ->firstOrFail();
     }
 
     /**

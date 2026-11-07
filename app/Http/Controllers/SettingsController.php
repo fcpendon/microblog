@@ -6,7 +6,6 @@ use App\Http\Requests\SettingsAvatarRequest;
 use App\Http\Requests\SettingsDetailsRequest;
 use App\Http\Requests\SettingsPasswordRequest;
 use App\Services\SettingsService;
-use Exception;
 use Illuminate\Http\JsonResponse;
 
 class SettingsController extends Controller
@@ -22,13 +21,7 @@ class SettingsController extends Controller
     {
         $data = $request->validated();
 
-        try {
-            $this->settingsService->attemptUpdateUserDetails($data);
-        } catch (Exception $e) {
-            return response()->json([
-                'message' => 'Update details failed: ' . $e->getMessage(),
-            ], 422);
-        }
+        $this->settingsService->attemptUpdateUserDetails($data);
 
         return response()->json([
             'message' => 'Update details successful!',
@@ -43,13 +36,7 @@ class SettingsController extends Controller
     {
         $data = $request->validated();
 
-        try {
-            $this->settingsService->attemptUpdateUserPassword($data);
-        } catch (Exception $e) {
-            return response()->json([
-                'message' => 'Update password failed: ' . $e->getMessage(),
-            ], 422);
-        }
+        $this->settingsService->attemptUpdateUserPassword($data);
 
         return response()->json([
             'message' => 'Update password successful!',
@@ -64,13 +51,7 @@ class SettingsController extends Controller
     {
         $image = $request->file('avatar');
 
-        try {
-            $this->settingsService->attemptUploadUserAvatar($image);
-        } catch (Exception $e) {
-            return response()->json([
-                'message' => 'Upload avatar failed: ' . $e->getMessage(),
-            ], 422);
-        }
+        $this->settingsService->attemptUploadUserAvatar($image);
 
         return response()->json([
             'message' => 'Upload avatar successful!',

@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use InvalidArgumentException;
 use App\Models\User;
+use InvalidArgumentException;
 
 class RegistrationService
 {
@@ -16,8 +16,6 @@ class RegistrationService
      */
     public function attemptRegisterUser(array $data): User
     {
-        $this->existsInDb($data['username']);
-
         return $this->userService->create($data);
     }
 

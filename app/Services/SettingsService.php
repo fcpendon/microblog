@@ -21,16 +21,28 @@ class SettingsService
     {
         $user_id = Auth::user()->id;
         $params = array();
+        $emailChanged = false;
 
         if ($this->isNewName($data['name'])) {
             $params['name'] = $data['name'];
         }
+
         if ($this->isNewUsername($data['username'])) {
             $params['username'] = $data['username'];
         }
 
+        if (array_key_exists('email', $data) && Auth::user()->email !== $data['email']) {
+            $params['email'] = $data['email'];
+            $params['email_verified_at'] = null;
+            $emailChanged = true;
+        }
+
         if (count($params)) {
             $this->userService->update($user_id, $params);
+        }
+
+        if ($emailChanged) {
+            Auth::user()->refresh()->sendEmailVerificationNotification();
         }
     }
 
@@ -59,10 +71,11 @@ class SettingsService
      */
     public function attemptUpdateUserPassword(array $data)
     {
-        $user_id = Auth::user()->id;
+        $user = Auth::user();
         $params['password'] = bcrypt($data['password']);
 
-        $this->userService->update($user_id, $params);
+        $this->userService->update($user->id, $params);
+        $user->tokens()->delete();
     }
 
     /**

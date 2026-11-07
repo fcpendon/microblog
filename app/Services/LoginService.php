@@ -2,37 +2,18 @@
 
 namespace App\Services;
 
-use App\Models\User;
-use InvalidArgumentException;
 use Illuminate\Support\Facades\Auth;
+use InvalidArgumentException;
 
 class LoginService
 {
-    public function __construct(private UserService $userService)
-    {}
-
     /**
      * @param array $data
      */
     public function attemptLoginUser(array $data)
     {
-        $this->getUser($data);
-
         if (!Auth::attempt($data)) {
-            throw new InvalidArgumentException('Oops, your password is incorrect');
+            throw new InvalidArgumentException('Invalid username or password.');
         }
-    }
-
-    /**
-     * @param array $data
-     * @return User
-     */
-    public function getUser(array $data): User
-    {
-        if (!$user = $this->userService->getByUsername($data['username'])) {
-            throw new InvalidArgumentException('Uh oh! It seems like username is not registered yet');
-        }
-
-        return $user;
     }
 }
