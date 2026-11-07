@@ -24176,8 +24176,7 @@ __webpack_require__.r(__webpack_exports__);
       this.user = {
         name: this.$store.state.user.name,
         username: this.$store.state.user.username,
-        image: this.$store.state.user.public_image_path,
-        accountType: this.$store.state.user.account_type
+        image: this.$store.state.user.public_image_path
       };
     }
   }
