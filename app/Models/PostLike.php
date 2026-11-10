@@ -15,7 +15,6 @@ class PostLike extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'id',
         'post_id',
         'user_id',
     ];
