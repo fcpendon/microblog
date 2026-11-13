@@ -12,7 +12,7 @@ class PostService
 {
     public function __construct(
         private PostImageService $postImageService,
-        private PostLikeService $postLikeService
+        private LikeService $likeService
     ) {}
 
     /**
@@ -64,7 +64,7 @@ class PostService
      */
     public function create(array $data)
     {
-        $post = Post::create([...$data, 'author_id' => Auth::id()]);
+        $post = Post::create([...$data, 'user_id' => Auth::id()]);
 
         if ($data['image']) {
             $this->postImageService->create($post, $data['image']);
@@ -116,7 +116,7 @@ class PostService
     public function findOwnPost(int $post_id)
     {
         return Post::whereKey($post_id)
-            ->where('author_id', Auth::id())
+            ->where('user_id', Auth::id())
             ->firstOrFail();
     }
 
@@ -126,7 +126,8 @@ class PostService
      */
     public function likePost(int $post_id): PostResource
     {
-        $this->postLikeService->like($post_id);
+        $post = Post::findOrFail($post_id);
+        $this->likeService->like($post, Auth::user());
 
         return $this->getPost($post_id);
     }
@@ -137,7 +138,8 @@ class PostService
      */
     public function unlikePost(int $post_id): PostResource
     {
-        $this->postLikeService->unlike($post_id);
+        $post = Post::findOrFail($post_id);
+        $this->likeService->unlike($post, Auth::user());
 
         return $this->getPost($post_id);
     }

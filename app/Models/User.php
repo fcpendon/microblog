@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Traits\HasImagePathAttribute;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -43,13 +44,8 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    public function posts()
+    public function posts(): HasMany
     {
-        return $this->hasMany(Post::class, 'author_id');
-    }
-
-    public function likes()
-    {
-        return $this->belongsToMany(Post::class, 'post_likes', 'user_id', 'post_id');
+        return $this->hasMany(Post::class, 'user_id');
     }
 }

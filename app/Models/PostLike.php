@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PostLike extends Model
 {
@@ -19,13 +20,5 @@ class PostLike extends Model
         'user_id',
     ];
 
-    public function post()
-    {
-        return $this->belongsTo(Post::class, 'post_id');
-    }
-
-    public function liker()
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
+    public $timestamps = false;
 }

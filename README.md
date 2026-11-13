@@ -3,8 +3,8 @@
 Microblog is a small social networking app built with Laravel and Vue. Users can register and verify their email, sign in, publish and manage posts, like posts, search for people, view profiles, and update their account details and avatar.
 
 This started as a capstone project on one of my previous companies to showcase my capabilities on modern JavaScript and Laravel.
-- 2022 Q1 - Started as PHP 7.4 + Laravel 8 backend with a Vue 2 + Vuetify + Material Design Icons + Webpack frontend.
-- 2026 Q2 - Updated the project dependencies to use PHP 8.0 + Laravel 9 and Vue 3 + TailwindCSS + Lucide + Vite.
+- 2022 Q1 - Started as PHP 7.4 + Laravel 8 backend with a Vue 2 + Vuetify + Material Design Icons + Webpack frontend. Bare-bones social media app that allowed registration, posts, uploading photos, liking posts, and searching users
+- 2026 Q2 - Updated the project dependencies to use PHP 8.0 + Laravel 9 and Vue 3 + TailwindCSS + Lucide + Vite. Added seeder that generates fake users with posts.
 - 2026 Q4 - Updated the project dependencies to use PHP 8.2 + Laravel 12 and configured support for Amazon S3 for image uploads.
 
 ## Requirements

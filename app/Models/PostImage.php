@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Traits\HasImagePathAttribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PostImage extends Model
 {
@@ -22,7 +23,7 @@ class PostImage extends Model
 
     public $timestamps = false;
 
-    public function post()
+    public function post(): BelongsTo
     {
         return $this->belongsTo(Post::class, 'post_id');
     }

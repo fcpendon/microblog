@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use App\Contracts\Likeable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Post extends Model
+class Post extends Model implements Likeable
 {
     use HasFactory;
 
@@ -16,31 +20,31 @@ class Post extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'author_id',
+        'user_id',
         'content',
     ];
 
-    public function author()
+    public function author(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'author_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function images()
+    public function images(): HasMany
     {
         return $this->hasMany(PostImage::class, 'post_id');
     }
 
-    public function likers()
+    public function likers(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'post_likes', 'post_id', 'user_id');
     }
 
-    public function likes()
+    public function likes(): HasMany
     {
         return $this->hasMany(PostLike::class, 'post_id');
     }
 
-    public function getPostedAtAttribute()
+    public function getPostedAtAttribute(): string
     {
         return Carbon::parse($this->created_at)->diffForHumans(['parts' => 2]);
     }

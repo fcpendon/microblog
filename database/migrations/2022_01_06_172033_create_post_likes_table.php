@@ -4,21 +4,19 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePostLikesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('post_likes', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('post_id');
-            $table->unsignedInteger('user_id');
+            $table->id();
+            $table->unsignedBigInteger('post_id');
+            $table->unsignedBigInteger('user_id');
 
-            $table->unique(['user_id', 'post_id'], 'post_likes_user_post_unique');
+            $table->unique(['post_id', 'user_id']);
 
             $table->foreign('post_id')
                 ->references('id')
@@ -34,11 +32,9 @@ class CreatePostLikesTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('post_likes');
     }
-}
+};
