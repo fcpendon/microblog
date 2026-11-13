@@ -280,7 +280,7 @@ class ApplicationFlowsTest extends TestCase
             ->assertJsonPath('message', 'Create post successful!');
 
         $this->assertDatabaseHas('posts', [
-            'author_id' => $user->id,
+            'user_id' => $user->id,
             'content' => 'A new post',
         ]);
 
