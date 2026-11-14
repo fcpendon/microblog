@@ -13,10 +13,8 @@ class LoginController extends Controller
 
     public function login(LoginRequest $request): JsonResponse
     {
-        $data = $request->validated();
-
         try {
-            $this->loginService->attemptLoginUser($data);
+            $this->loginService->attemptLoginUser($request->validated());
         } catch (InvalidArgumentException $e) {
             return response()->json([
                 'message' => 'Invalid username or password.',

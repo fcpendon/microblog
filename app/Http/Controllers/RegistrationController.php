@@ -12,9 +12,7 @@ class RegistrationController extends Controller
 
     public function register(RegistrationRequest $request): JsonResponse
     {
-        $data = $request->validated();
-
-        $user = $this->registrationService->attemptRegisterUser($data);
+        $user = $this->registrationService->attemptRegisterUser($request->validated());
         $user->sendEmailVerificationNotification();
 
         return response()->json([

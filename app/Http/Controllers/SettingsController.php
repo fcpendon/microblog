@@ -14,9 +14,7 @@ class SettingsController extends Controller
 
     public function update_details(SettingsDetailsRequest $request): JsonResponse
     {
-        $data = $request->validated();
-
-        $this->settingsService->attemptUpdateUserDetails($data);
+        $this->settingsService->attemptUpdateUserDetails($request->validated());
 
         return response()->json([
             'message' => 'Update details successful!',
@@ -25,9 +23,7 @@ class SettingsController extends Controller
 
     public function update_password(SettingsPasswordRequest $request): JsonResponse
     {
-        $data = $request->validated();
-
-        $this->settingsService->attemptUpdateUserPassword($data);
+        $this->settingsService->attemptUpdateUserPassword($request->validated());
 
         return response()->json([
             'message' => 'Update password successful!',
@@ -36,9 +32,7 @@ class SettingsController extends Controller
 
     public function upload_avatar(SettingsAvatarRequest $request): JsonResponse
     {
-        $image = $request->file('avatar');
-
-        $this->settingsService->attemptUploadUserAvatar($image);
+        $this->settingsService->attemptUploadUserAvatar($request->file('avatar'));
 
         return response()->json([
             'message' => 'Upload avatar successful!',

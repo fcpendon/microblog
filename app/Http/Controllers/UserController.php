@@ -17,10 +17,8 @@ class UserController extends Controller
 
     public function search(SearchUserRequest $request): AnonymousResourceCollection
     {
-        $data = $request->validated();
-
-        $keyword = $data['keyword'];
-        $limit = $data['limit'] ?? self::SEARCH_USER_LIMIT;
+        $keyword = $request->validated('keyword');
+        $limit = $request->validated('limit') ?? self::SEARCH_USER_LIMIT;
 
         return UserResource::collection(
             $this->userService->searchByNameOrUsername($keyword, $limit)
