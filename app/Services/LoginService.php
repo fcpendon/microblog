@@ -7,12 +7,9 @@ use InvalidArgumentException;
 
 class LoginService
 {
-    /**
-     * @param array $data
-     */
-    public function attemptLoginUser(array $data)
+    public function attemptLoginUser(array $data): void
     {
-        if (!Auth::attempt($data)) {
+        if (! Auth::attempt($data)) {
             throw new InvalidArgumentException('Invalid username or password.');
         }
     }

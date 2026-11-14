@@ -8,12 +8,11 @@ use Illuminate\Support\Facades\Auth;
 class LogoutService
 {
     /**
-     *
      * @throws AuthenticationException
      */
-    public function attemptLogout()
+    public function attemptLogout(): void
     {
-        if (!Auth::user()) {
+        if (! Auth::user()) {
             throw new AuthenticationException('User already logged out');
         }
 

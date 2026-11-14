@@ -8,12 +8,8 @@ use Illuminate\Http\Request;
 
 class LogoutController extends Controller
 {
-    public function __construct(private LogoutService $logoutService)
-    {}
+    public function __construct(private LogoutService $logoutService) {}
 
-    /**
-     * @return JsonResponse
-     */
     public function logout(Request $request): JsonResponse
     {
         $this->logoutService->attemptLogout();

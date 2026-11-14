@@ -2,16 +2,11 @@
 
 namespace App\Services;
 
-use App\Http\Resources\UserResource;
 use App\Models\User;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Database\Eloquent\Collection;
 
 class UserService
 {
-    /**
-     * @param array $data
-     * @return User
-     */
     public function create(array $data): User
     {
         $user = new User($data);
@@ -21,47 +16,12 @@ class UserService
         return $user->fresh();
     }
 
-    /**
-     * @param string $keyword
-     * @param int $limit
-     * @return JsonResource
-     */
-    public function searchByNameOrUsername(string $keyword, int $limit): JsonResource
+    public function searchByNameOrUsername(string $keyword, int $limit): Collection
     {
-        $user = User::where('username', 'like', "%{$keyword}%")
+        return User::where('username', 'like', "%{$keyword}%")
             ->orWhere('name', 'like', "%{$keyword}%")
             ->distinct('username')
             ->limit($limit)
             ->get();
-
-        return UserResource::collection($user);
-    }
-
-    /**
-     * @param string $username
-     * @return User | null
-     */
-    public function getByUsername(string $username): User | null
-    {
-        return User::where('username', $username)->first();
-    }
-
-    /**
-     * @param string $username
-     * @return UserResource
-     */
-    public function getByUsernameResource(string $username): UserResource
-    {
-        return new UserResource(User::where('username', $username)->firstOrFail());
-    }
-
-    /**
-     * @param string $user_id
-     * @param array $data
-     * @return void
-     */
-    public function update(string $user_id, array $data)
-    {
-        User::find($user_id)->update($data);
     }
 }

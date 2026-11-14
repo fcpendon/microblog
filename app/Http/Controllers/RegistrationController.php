@@ -8,13 +8,8 @@ use Illuminate\Http\JsonResponse;
 
 class RegistrationController extends Controller
 {
-    public function __construct(private RegistrationService $registrationService)
-    {}
+    public function __construct(private RegistrationService $registrationService) {}
 
-    /**
-     * @param RegistrationRequest $request
-     * @return JsonResponse
-     */
     public function register(RegistrationRequest $request): JsonResponse
     {
         $data = $request->validated();

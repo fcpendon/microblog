@@ -2,77 +2,74 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PostRequest;
 use App\Http\Requests\PostIndexRequest;
+use App\Http\Requests\PostRequest;
+use App\Http\Resources\PostResource;
+use App\Models\Post;
 use App\Services\PostService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class PostController extends Controller
 {
     const POSTS_OFFSET_DEFAULT = 0;
+
     const POSTS_LIMIT_DEFAULT = 10;
 
-    public function __construct(private PostService $postService)
-    {}
+    /**
+     * Create a controller using the post service.
+     */
+    public function __construct(private PostService $postService) {}
 
     /**
-     * @param Request $request
-     * @param string $username
-     * @return JsonResponse
+     * List all posts, or optionally filter using a username.
      */
-    public function get_posts(PostIndexRequest $request, string $username = ''): JsonResponse
+    public function index(PostIndexRequest $request, string $username = ''): AnonymousResourceCollection
     {
         $data = $request->validated();
-
         $offset = $data['offset'] ?? self::POSTS_OFFSET_DEFAULT;
         $limit = $data['limit'] ?? self::POSTS_LIMIT_DEFAULT;
-        $posts = $this->postService->getPosts($username, $offset, $limit);
 
-        return response()->json([
-            'data' => $posts,
-        ]);
+        return PostResource::collection(
+            $this->postService->getPosts($username, $offset, $limit)
+        );
     }
 
     /**
-     * @param PostRequest $request
-     * @return JsonResponse
+     * Create a post for the authenticated user.
      */
-    public function create(PostRequest $request): JsonResponse
+    public function store(PostRequest $request): JsonResponse
     {
-        $data = $request->validated();
-        $data['image'] = $request->file('image') ?? null;
-
-        $this->postService->create($data);
-
-        return response()->json([
-            'message' => 'Create post successful!',
-        ], JsonResponse::HTTP_CREATED);
+        return (new PostResource(
+            $this->postService->create(
+                $request->validated(),
+                $request->file('image')
+            )
+        ))
+            ->response()
+            ->setStatusCode(JsonResponse::HTTP_CREATED);
     }
 
     /**
-     * @param PostRequest $request
-     * @return JsonResponse
+     * Update a post owned by the authenticated user.
      */
-    public function update(PostRequest $request): JsonResponse
+    public function update(PostRequest $request, Post $post): PostResource
     {
-        $data = $request->validated();
-        $data['image'] = $request->file('image') ?? null;
-
-        $this->postService->update($request->id, $data);
-
-        return response()->json([
-            'message' => 'Update post successful!',
-        ]);
+        return new PostResource(
+            $this->postService->update(
+                $post,
+                $request->validated(),
+                $request->file('image')
+            )
+        );
     }
 
     /**
-     * @param Request $request
-     * @return JsonResponse
+     * Delete a post owned by the authenticated user.
      */
-    public function destroy(Request $request): JsonResponse
+    public function destroy(Post $post): JsonResponse
     {
-        $this->postService->delete($request->id);
+        $this->postService->delete($post);
 
         return response()->json([
             'message' => 'Delete post successful!',
@@ -80,30 +77,22 @@ class PostController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @return JsonResponse
+     * Like a post.
      */
-    public function like_post(Request $request): JsonResponse
+    public function like(Post $post): PostResource
     {
-        $result = $this->postService->likePost($request->id);
-
-        return response()->json([
-            'message' => 'Like post successful!',
-            'data' => $result,
-        ]);
+        return new PostResource(
+            $this->postService->like($post)
+        );
     }
 
     /**
-     * @param Request $request
-     * @return JsonResponse
+     * Unlike a post.
      */
-    public function unlike_post(Request $request): JsonResponse
+    public function unlike(Post $post): PostResource
     {
-        $result = $this->postService->unlikePost($request->id);
-
-        return response()->json([
-            'message' => 'Unlike post successful!',
-            'data' => $result,
-        ]);
+        return new PostResource(
+            $this->postService->unlike($post)
+        );
     }
 }

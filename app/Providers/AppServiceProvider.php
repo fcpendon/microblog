@@ -18,9 +18,7 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Register any application services.
      */
-    public function register(): void
-    {
-    }
+    public function register(): void {}
 
     /**
      * Bootstrap any application services.
@@ -46,7 +44,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         ResetPassword::createUrlUsing(function (User $user, string $token): string {
-            return url('/reset-password/' . $token . '?email=' . urlencode($user->email));
+            return url('/reset-password/'.$token.'?email='.urlencode($user->email));
         });
 
         VerifyEmail::createUrlUsing(function (User $user): string {

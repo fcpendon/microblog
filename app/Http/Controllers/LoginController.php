@@ -9,13 +9,8 @@ use InvalidArgumentException;
 
 class LoginController extends Controller
 {
-    public function __construct(private LoginService $loginService)
-    {}
+    public function __construct(private LoginService $loginService) {}
 
-    /**
-     * @param LoginRequest $request
-     * @return JsonResponse
-     */
     public function login(LoginRequest $request): JsonResponse
     {
         $data = $request->validated();

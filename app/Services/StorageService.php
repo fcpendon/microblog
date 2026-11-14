@@ -7,21 +7,12 @@ use Illuminate\Support\Facades\Storage;
 
 class StorageService
 {
-    /**
-     * @param UploadedFile $image
-     * @param string $category
-     * @return string
-     */
     public function store(UploadedFile $image, string $category): string
     {
         return $image->store($category);
     }
 
-    /**
-     * @param string $path
-     * @return void
-     */
-    public function delete(string $path)
+    public function delete(string $path): void
     {
         Storage::delete($path);
     }

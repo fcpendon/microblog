@@ -14,11 +14,11 @@ class EmailVerificationController extends Controller
     {
         $user = User::findOrFail($id);
 
-        if (!hash_equals(sha1($user->getEmailForVerification()), $hash)) {
+        if (! hash_equals(sha1($user->getEmailForVerification()), $hash)) {
             abort(RedirectResponse::HTTP_FORBIDDEN);
         }
 
-        if (!$user->hasVerifiedEmail() && $user->markEmailAsVerified()) {
+        if (! $user->hasVerifiedEmail() && $user->markEmailAsVerified()) {
             event(new Verified($user));
         }
 

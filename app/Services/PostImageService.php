@@ -7,36 +7,21 @@ use Illuminate\Http\UploadedFile;
 
 class PostImageService
 {
-    public function __construct(private StorageService $storageService)
-    {}
+    public function __construct(private StorageService $storageService) {}
 
-    /**
-     * @param Post $post
-     * @param UploadedFile $image
-     * @return void
-     */
-    public function create(Post $post, UploadedFile $image)
+    public function create(Post $post, UploadedFile $image): void
     {
         $data['image_path'] = $this->storageService->store($image, 'post_images');
         $post->images()->create($data);
     }
 
-    /**
-     * @param Post $post
-     * @param UploadedFile $image
-     * @return void
-     */
-    public function update(Post $post, UploadedFile $image)
+    public function update(Post $post, UploadedFile $image): void
     {
         $this->delete($post);
         $this->create($post, $image);
     }
 
-    /**
-     * @param Post $post
-     * @return void
-     */
-    public function delete(Post $post)
+    public function delete(Post $post): void
     {
         $post_images = $post->images()->get();
 

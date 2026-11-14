@@ -2,25 +2,18 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 
 class SettingsService
 {
-    public function __construct(
-        private UserService $userService,
-        private RegistrationService $registrationService,
-        private StorageService $storageService
-    ) {}
+    public function __construct(private StorageService $storageService) {}
 
-    /**
-     * @param array $data
-     * @return void
-     */
-    public function attemptUpdateUserDetails(array $data)
+    public function attemptUpdateUserDetails(array $data): void
     {
-        $user_id = Auth::user()->id;
-        $params = array();
+        $$user = Auth::user();
+        $params = [];
         $emailChanged = false;
 
         if ($this->isNewName($data['name'])) {
@@ -31,67 +24,52 @@ class SettingsService
             $params['username'] = $data['username'];
         }
 
-        if (array_key_exists('email', $data) && Auth::user()->email !== $data['email']) {
+        if (array_key_exists('email', $data) && $user->email !== $data['email']) {
             $params['email'] = $data['email'];
             $params['email_verified_at'] = null;
             $emailChanged = true;
         }
 
         if (count($params)) {
-            $this->userService->update($user_id, $params);
+            $user->update($params);
         }
 
         if ($emailChanged) {
-            Auth::user()->refresh()->sendEmailVerificationNotification();
+            $user->refresh()->sendEmailVerificationNotification();
         }
     }
 
-    /**
-     * @param string $name
-     * @return bool
-     */
     public function isNewName(string $name): bool
     {
         return Auth::user()->name !== $name;
     }
 
-    /**
-     * @param string $username
-     * @return bool
-     */
     public function isNewUsername(string $username): bool
     {
-        return Auth::user()->username !== $username
-            && !$this->registrationService->existsInDb($username);
+        return Auth::user()->username !== $username;
     }
 
-    /**
-     * @param array $data
-     * @return void
-     */
-    public function attemptUpdateUserPassword(array $data)
+    public function attemptUpdateUserPassword(array $data): void
     {
+        /** @var User $user */
         $user = Auth::user();
         $params['password'] = bcrypt($data['password']);
 
-        $this->userService->update($user->id, $params);
+        $user->update($params);
         $user->tokens()->delete();
     }
 
-    /**
-     * @param $avatar
-     * @return void
-     */
-    public function attemptUploadUserAvatar(UploadedFile $avatar)
+    public function attemptUploadUserAvatar(UploadedFile $avatar): void
     {
-        $user_id = Auth::user()->id;
+        /** @var User $user */
+        $user = Auth::user();
         $params['image_path'] = $this->storageService->store($avatar, 'users');
 
-        $image_path = Auth::user()->image_path;
+        $image_path = $user->image_path;
         if ($image_path) {
             $this->storageService->delete($image_path);
         }
 
-        $this->userService->update($user_id, $params);
+        $user->update($params);
     }
 }

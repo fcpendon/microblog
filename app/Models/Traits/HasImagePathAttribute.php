@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\Storage;
  */
 trait HasImagePathAttribute
 {
-    public function getPublicImagePathAttribute(): string | null
+    public function getPublicImagePathAttribute(): ?string
     {
-        if (!$this->image_path) {
+        if (! $this->image_path) {
             return null;
         } elseif (config('filesystems.default') === 's3') {
             return Storage::disk('s3')->temporaryUrl(

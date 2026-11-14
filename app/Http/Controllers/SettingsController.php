@@ -10,13 +10,8 @@ use Illuminate\Http\JsonResponse;
 
 class SettingsController extends Controller
 {
-    public function __construct(private SettingsService $settingsService)
-    {}
+    public function __construct(private SettingsService $settingsService) {}
 
-    /**
-     * @param SettingsDetailsRequest $request
-     * @return JsonResponse
-     */
     public function update_details(SettingsDetailsRequest $request): JsonResponse
     {
         $data = $request->validated();
@@ -28,10 +23,6 @@ class SettingsController extends Controller
         ]);
     }
 
-    /**
-     * @param SettingsPasswordRequest $request
-     * @return JsonResponse
-     */
     public function update_password(SettingsPasswordRequest $request): JsonResponse
     {
         $data = $request->validated();
@@ -43,10 +34,6 @@ class SettingsController extends Controller
         ]);
     }
 
-    /**
-     * @param SettingsAvatarRequest $request
-     * @return JsonResponse
-     */
     public function upload_avatar(SettingsAvatarRequest $request): JsonResponse
     {
         $image = $request->file('avatar');
