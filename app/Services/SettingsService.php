@@ -12,7 +12,7 @@ class SettingsService
 
     public function attemptUpdateUserDetails(array $data): void
     {
-        $$user = Auth::user();
+        $user = Auth::user();
         $params = [];
         $emailChanged = false;
 

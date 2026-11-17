@@ -8,15 +8,21 @@ use App\Http\Resources\PostResource;
 use App\Models\Post;
 use App\Models\User;
 use App\Services\PostService;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class PostController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Create a controller using the post service.
      */
-    public function __construct(private PostService $postService) {}
+    public function __construct(private PostService $postService)
+    {
+        $this->authorizeResource(Post::class, 'post');
+    }
 
     /**
      * List all posts, or optionally filter using a username.
