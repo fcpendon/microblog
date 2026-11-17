@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
-use App\Http\Resources\PostResource;
 use App\Models\Post;
-use Illuminate\Http\Resources\Json\JsonResource;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
-use InvalidArgumentException;
 
 class PostService
 {
@@ -16,131 +16,124 @@ class PostService
     ) {}
 
     /**
-     * @param string $username
-     * @param int $offset
-     * @param int $limit
-     * @return JsonResource
+     * Retrieve a paginated set of posts for the feed.
+     * Can filter out posts based on user.
+     *
+     * @return Collection<int, Post>
      */
-    public function getPosts(string $username, int $offset, int $limit): JsonResource
+    public function getPosts(int $offset, int $limit, ?User $user): Collection
     {
-        $post = Post::when($username, function ($query, $username) {
-            return $query->whereRelation('author', 'username', $username);
-        })
-            ->latest()
-            ->with(['author:id,name,username,image_path', 'images'])
-            ->with(['likers' => function ($query) {
-                $query->select('user_id')
-                    ->where('user_id', Auth::user()->id);
-            }])
+        return Post::query()
+            ->when($user, fn ($query) => $query->where('user_id', $user->id))
+            ->with([
+                'author:id,name,username,image_path',
+                'images',
+                // 'latestComment.author:id,name,username,image_path',
+            ])
+            // ->withCount(['likes', 'comments'])
             ->withCount('likes')
+            ->withExists([
+                'likers as is_liked' => fn ($query) => $query->where('users.id', Auth::id()),
+            ])
+            ->latest()
             ->offset($offset)
             ->limit($limit)
             ->get();
-
-        return PostResource::collection($post);
     }
 
     /**
-     * @param int $post_id
-     * @return PostResource
+     * Create a post for the authenticated user.
+     *
+     * @param  array<string, mixed>  $data
      */
-    public function getPost(int $post_id): PostResource
-    {
-        $post = Post::where('id', $post_id)
-            ->with(['author:id,name,username,image_path', 'images'])
-            ->with(['likers' => function ($query) {
-                $query->select('user_id')
-                    ->where('user_id', Auth::user()->id);
-            }])
-            ->withCount('likes')
-            ->firstOrFail();
-
-        return new PostResource($post);
-    }
-
-    /**
-     * @param array $data
-     * @return void
-     */
-    public function create(array $data)
+    public function create(array $data, ?UploadedFile $image): Post
     {
         $post = Post::create([...$data, 'user_id' => Auth::id()]);
 
-        if ($data['image']) {
-            $this->postImageService->create($post, $data['image']);
+        if ($image) {
+            $this->postImageService->create($post, $image);
         }
+
+        return $this->loadPost($post);
     }
 
     /**
-     * @param int $post_id
-     * @param array $data
-     * @return void
+     * Update a post owned by the authenticated user.
+     *
+     * @param  array<string, mixed>  $data
      */
-    public function update(int $post_id, array $data)
+    public function update(array $data, ?UploadedFile $image, Post $post): Post
     {
-        $post = $this->findOwnPost($post_id);
-
-        if (!$post) {
-            throw new InvalidArgumentException('This post does not belong to you');
-        }
-
+        $post = $this->findOwnPost($post);
         $post->update($data);
 
-        if ($data['image']) {
-            $this->postImageService->update($post, $data['image']);
+        if ($image) {
+            $this->postImageService->update($post, $image);
         } elseif (empty($data['old_image'])) {
             $this->postImageService->delete($post);
         }
+
+        return $this->loadPost($post);
     }
 
     /**
-     * @param int $post_id
-     * @return void
+     * Delete a post owned by the authenticated user.
      */
-    public function delete(int $post_id)
+    public function delete(Post $post): void
     {
-        $post = $this->findOwnPost($post_id);
-
-        if (!$post) {
-            throw new InvalidArgumentException('This post does not belong to you');
-        }
+        $post = $this->findOwnPost($post);
 
         $this->postImageService->delete($post);
         $post->delete();
     }
 
     /**
-     * @param int $post_id
-     * @return mixed
+     * Like a post.
      */
-    public function findOwnPost(int $post_id)
+    public function like(Post $post): Post
     {
-        return Post::whereKey($post_id)
+        $this->likeService->like($post, Auth::user());
+
+        return $this->loadPost($post);
+    }
+
+    /**
+     * Unlike a post.
+     */
+    public function unlike(Post $post): Post
+    {
+        $this->likeService->unlike($post, Auth::user());
+
+        return $this->loadPost($post);
+    }
+
+    /**
+     * Find a post owned by the authenticated user.
+     */
+    private function findOwnPost(Post $post): Post
+    {
+        return Post::query()
+            ->whereKey($post->getKey())
             ->where('user_id', Auth::id())
             ->firstOrFail();
     }
 
     /**
-     * @param int $post_id
-     * @return PostResource
+     * Load the post relationships and counters used by PostResource.
      */
-    public function likePost(int $post_id): PostResource
+    private function loadPost(Post $post): Post
     {
-        $post = Post::findOrFail($post_id);
-        $this->likeService->like($post, Auth::user());
-
-        return $this->getPost($post_id);
-    }
-
-    /**
-     * @param int $post_id
-     * @return PostResource
-     */
-    public function unlikePost(int $post_id): PostResource
-    {
-        $post = Post::findOrFail($post_id);
-        $this->likeService->unlike($post, Auth::user());
-
-        return $this->getPost($post_id);
+        return Post::query()
+            ->whereKey($post->getKey())
+            ->with([
+                'author:id,name,username,image_path',
+                'images',
+                // 'latestComment.author:id,name,username,image_path',
+            ])
+            ->withCount('likes')
+            ->withExists([
+                'likers as is_liked' => fn ($query) => $query->where('users.id', Auth::id()),
+            ])
+            ->firstOrFail();
     }
 }

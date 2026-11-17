@@ -71,6 +71,7 @@ export default {
       axios.get('/api/posts/' + (this.$route.params.username ?? ''), {
         params: {
           offset: reset ? 0 : this.posts.length,
+          limit: 10,
         }
       })
         .then(res => {

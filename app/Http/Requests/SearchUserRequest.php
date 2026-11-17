@@ -21,7 +21,7 @@ class SearchUserRequest extends FormRequest
     {
         return [
             'name' => 'required|string|min:1|max:100',
-            'limit' => 'nullable|integer|min:1|max:50',
+            'limit' => 'required|integer|min:1|max:50',
         ];
     }
 }

@@ -3,12 +3,12 @@
 namespace App\Models;
 
 use App\Contracts\Likeable;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Post extends Model implements Likeable
 {
@@ -44,8 +44,13 @@ class Post extends Model implements Likeable
         return $this->hasMany(PostLike::class, 'post_id');
     }
 
-    public function getPostedAtAttribute(): string
-    {
-        return Carbon::parse($this->created_at)->diffForHumans(['parts' => 2]);
-    }
+    // public function comments(): HasMany
+    // {
+    //     return $this->hasMany(Comment::class, 'post_id');
+    // }
+
+    // public function latestComment(): HasOne
+    // {
+    //     return $this->hasOne(Comment::class, 'post_id')->latestOfMany('created_at');
+    // }
 }

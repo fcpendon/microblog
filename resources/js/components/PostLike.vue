@@ -26,7 +26,7 @@ export default {
   data () {
     return {
       isLiked: this.post.is_liked,
-      likeCounter: this.post.likes,
+      likeCounter: this.post.likes_count,
     }
   },
   methods: {
@@ -37,7 +37,7 @@ export default {
       axios.post('/api/posts/' + this.post.id + '/like')
         .then(res => {
           this.isLiked = res.data.data.is_liked;
-          this.likeCounter = res.data.data.likes;
+          this.likeCounter = res.data.data.likes_count;
         })
         .catch(err => {
           this.setAlertError(err.response?.data || 'Could not update the like. Please try again.');
@@ -47,7 +47,7 @@ export default {
       axios.delete('/api/posts/' + this.post.id + '/like')
         .then(res => {
           this.isLiked = res.data.data.is_liked;
-          this.likeCounter = res.data.data.likes;
+          this.likeCounter = res.data.data.likes_count;
         })
         .catch(err => {
           this.setAlertError(err.response?.data || 'Could not update the like. Please try again.');

@@ -7,16 +7,21 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class PostResource extends JsonResource
 {
-    public function toArray($request)
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(Request $request): array
     {
         return [
             'id' => $this->id,
             'author' => new UserResource($this->author),
             'content' => $this->content,
             'images' => PostImageResource::collection($this->images),
-            'posted_at' => $this->posted_at,
-            'is_liked' => count($this->likers) ? true : false,
-            'likes' => $this->likes_count,
+            'created_at' => $this->created_at?->diffForHumans(['parts' => 2]),
+            'is_liked' => $this->is_liked,
+            'likes_count' => $this->whenCounted('likes'),
+            // 'comments_count' => $this->whenCounted('comments'),
+            // 'latest_comment' => new CommentResource($this->whenLoaded('latestComment')),
         ];
     }
 }

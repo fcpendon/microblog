@@ -13,7 +13,7 @@
     ></textarea>
     <div class="mt-2 flex items-center justify-between border-t border-[var(--color-line)] pt-3">
       <div class="flex items-center gap-2">
-        <input ref="file" class="sr-only" type="file" name="image" accept="image/gif, image/jpeg, image/jpg, image/png" @change="onChange($event.target.files[0])" />
+        <input ref="file" class="sr-only" type="file" name="image" accept="image/jpg, image/jpeg, image/png, image/webp" @change="onChange($event.target.files[0])" />
         <button v-if="!imagePreview" type="button" class="inline-flex h-9 items-center gap-2 rounded-full px-3 text-sm font-semibold text-[var(--color-brand)] hover:bg-[var(--color-highlight)]" @click="handleFileImport">
           <ImagePlus :size="17" aria-hidden="true" /> Add image
         </button>
@@ -103,7 +103,7 @@ export default {
         }
         (this.isUpdate ?
           axios.post('/api/posts/' + this.post.id, formData) :
-          axios.post('/api/post', formData))
+          axios.post('/api/posts', formData))
           .then(res => {
             this.setAlertSuccess(res.data.message);
             this.resetForm();

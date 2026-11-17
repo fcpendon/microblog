@@ -11,7 +11,7 @@
               <router-link :to="{ name: 'profile', params: { username: post.author.username }}" class="truncate text-sm font-bold text-[var(--color-ink)] no-underline hover:underline">{{ post.author.name }}</router-link>
               <router-link :to="{ name: 'profile', params: { username: post.author.username }}" class="truncate text-xs text-[var(--color-muted)] no-underline hover:underline">@{{ post.author.username }}</router-link>
             </div>
-            <time class="mt-0.5 block text-xs text-[var(--color-muted)]">{{ post.posted_at }}</time>
+            <time class="mt-0.5 block text-xs text-[var(--color-muted)]">{{ post.created_at }}</time>
           </div>
           <div v-if="isOwnPost(post.author.username)" class="flex shrink-0 items-center gap-1">
         <post-edit :post="post"></post-edit>
@@ -29,9 +29,11 @@
             loading="lazy"
           />
         </div>
-        <div class="mt-3 flex items-center justify-between border-t border-[var(--color-line)] pt-2">
-          <post-like :post="post"></post-like>
-        </div>
+        <post-comments :post="post">
+          <template #like>
+            <post-like :post="post"></post-like>
+          </template>
+        </post-comments>
       </div>
     </div>
   </article>
@@ -42,6 +44,7 @@ import ImagePlaceholder from './ImagePlaceholder.vue';
 import PostEdit from './PostEdit.vue';
 import PostDelete from './PostDelete.vue';
 import PostLike from './PostLike.vue';
+import PostComments from './PostComments.vue';
 
 export default {
   components: {
@@ -49,6 +52,7 @@ export default {
     PostEdit,
     PostDelete,
     PostLike,
+    PostComments,
   },
   props: ['post'],
   methods: {

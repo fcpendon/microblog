@@ -6,16 +6,13 @@ use App\Http\Requests\PostIndexRequest;
 use App\Http\Requests\PostRequest;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
+use App\Models\User;
 use App\Services\PostService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class PostController extends Controller
 {
-    const POSTS_OFFSET_DEFAULT = 0;
-
-    const POSTS_LIMIT_DEFAULT = 10;
-
     /**
      * Create a controller using the post service.
      */
@@ -24,30 +21,28 @@ class PostController extends Controller
     /**
      * List all posts, or optionally filter using a username.
      */
-    public function index(PostIndexRequest $request, string $username = ''): AnonymousResourceCollection
+    public function index(PostIndexRequest $request, ?User $user = null): AnonymousResourceCollection
     {
-        $data = $request->validated();
-        $offset = $data['offset'] ?? self::POSTS_OFFSET_DEFAULT;
-        $limit = $data['limit'] ?? self::POSTS_LIMIT_DEFAULT;
-
         return PostResource::collection(
-            $this->postService->getPosts($username, $offset, $limit)
+            $this->postService->getPosts(
+                $request->validated('offset'),
+                $request->validated('limit'),
+                $user
+            )
         );
     }
 
     /**
      * Create a post for the authenticated user.
      */
-    public function store(PostRequest $request): JsonResponse
+    public function store(PostRequest $request): PostResource
     {
-        return (new PostResource(
+        return new PostResource(
             $this->postService->create(
                 $request->validated(),
                 $request->file('image')
             )
-        ))
-            ->response()
-            ->setStatusCode(JsonResponse::HTTP_CREATED);
+        );
     }
 
     /**
@@ -57,9 +52,9 @@ class PostController extends Controller
     {
         return new PostResource(
             $this->postService->update(
-                $post,
                 $request->validated(),
-                $request->file('image')
+                $request->file('image'),
+                $post
             )
         );
     }

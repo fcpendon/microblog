@@ -14,8 +14,8 @@ class PostIndexRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'offset' => 'nullable|integer|min:0',
-            'limit' => 'nullable|integer|min:1|max:50',
+            'offset' => 'required|integer|min:0',
+            'limit' => 'required|integer|min:1|max:50',
         ];
     }
 }
