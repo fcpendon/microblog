@@ -37,10 +37,10 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function() {
     Route::delete('/posts/{post}', [PostController::class, 'destroy']);
     Route::post('/posts/{post}/like', [PostController::class, 'like']);
     Route::delete('/posts/{post}/like', [PostController::class, 'unlike']);
-    // Route::get('/posts/{post}/comments', [CommentController::class, 'index']);
-    // Route::post('/posts/{post}/comments', [CommentController::class, 'store']);
-    // Route::put('/comments/{comment}', [CommentController::class, 'update']);
-    // Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
-    // Route::post('/comments/{comment}/like', [CommentController::class, 'like']);
-    // Route::delete('/comments/{comment}/like', [CommentController::class, 'unlike']);
+    Route::get('/posts/{post}/comments', [CommentController::class, 'index']);
+    Route::post('/posts/{post}/comments', [CommentController::class, 'store']);
+    Route::put('/comments/{comment}', [CommentController::class, 'update']);
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
+    Route::post('/comments/{comment}/like', [CommentController::class, 'like']);
+    Route::delete('/comments/{comment}/like', [CommentController::class, 'unlike']);
 });

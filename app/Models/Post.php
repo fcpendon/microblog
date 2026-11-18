@@ -44,13 +44,13 @@ class Post extends Model implements Likeable
         return $this->hasMany(PostLike::class, 'post_id');
     }
 
-    // public function comments(): HasMany
-    // {
-    //     return $this->hasMany(Comment::class, 'post_id');
-    // }
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class, 'post_id');
+    }
 
-    // public function latestComment(): HasOne
-    // {
-    //     return $this->hasOne(Comment::class, 'post_id')->latestOfMany('created_at');
-    // }
+    public function latestComment(): HasOne
+    {
+        return $this->hasOne(Comment::class, 'post_id')->latestOfMany('created_at');
+    }
 }

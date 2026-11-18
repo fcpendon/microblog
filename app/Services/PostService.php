@@ -28,10 +28,9 @@ class PostService
             ->with([
                 'author:id,name,username,image_path',
                 'images',
-                // 'latestComment.author:id,name,username,image_path',
+                'latestComment.author:id,name,username,image_path',
             ])
-            // ->withCount(['likes', 'comments'])
-            ->withCount('likes')
+            ->withCount(['likes', 'comments'])
             ->withExists([
                 'likers as is_liked' => fn ($query) => $query->where('users.id', Auth::id()),
             ])
@@ -128,7 +127,7 @@ class PostService
             ->with([
                 'author:id,name,username,image_path',
                 'images',
-                // 'latestComment.author:id,name,username,image_path',
+                'latestComment.author:id,name,username,image_path',
             ])
             ->withCount('likes')
             ->withExists([

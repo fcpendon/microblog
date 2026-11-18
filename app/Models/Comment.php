@@ -25,7 +25,7 @@ class Comment extends Model implements Likeable
     {
         return $this->belongsTo(Post::class, 'post_id');
     }
-    
+
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
