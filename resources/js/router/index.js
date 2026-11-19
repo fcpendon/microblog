@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import store from '../store';
+import { useAuthStore } from '../stores/auth';
+import { pinia } from '../stores';
 
 import LoginForm from '../pages/LoginForm.vue';
 import RegistrationForm from '../pages/RegistrationForm.vue';
@@ -119,29 +120,30 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to) => {
+  const auth = useAuthStore(pinia);
   document.title = `${to.meta.title} - ${appName}`;
 
   if (to.meta.public) {
     return true;
   }
 
-  if (!store.state.authInitialized) {
-    await store.dispatch('getUser');
+  if (!auth.initialized) {
+    await auth.fetchUser();
   }
 
   if (to.meta.middleware === 'guest') {
-    if (store.state.authenticated) {
-      return store.state.user.email_verified_at ? { name: 'home' } : { name: 'verify-email' };
+    if (auth.authenticated) {
+      return auth.user.email_verified_at ? { name: 'home' } : { name: 'verify-email' };
     }
 
     return true;
   }
 
-  if (store.state.authenticated) {
-    if (!store.state.user.email_verified_at && to.name !== 'verify-email') {
+  if (auth.authenticated) {
+    if (!auth.user.email_verified_at && to.name !== 'verify-email') {
       return { name: 'verify-email' };
     }
-    if (store.state.user.email_verified_at && to.name === 'verify-email') {
+    if (auth.user.email_verified_at && to.name === 'verify-email') {
       return { name: 'home' };
     }
 

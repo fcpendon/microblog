@@ -20,7 +20,7 @@ class SearchUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|min:1|max:100',
+            'keyword' => 'required|string|min:1|max:100',
             'limit' => 'required|integer|min:1|max:50',
         ];
     }

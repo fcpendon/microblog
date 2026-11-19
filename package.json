@@ -10,11 +10,15 @@
         "production": "vite build"
     },
     "devDependencies": {
+        "@eslint/js": "^10.0.1",
         "@tailwindcss/vite": "^4.3.3",
         "@vitejs/plugin-vue": "^6.0.7",
         "@vue/compiler-sfc": "^3.5.0",
         "@vue/devtools": "^5.3.4",
         "axios": "^0.21",
+        "eslint": "^10.15.0",
+        "eslint-plugin-vue": "^10.12.1",
+        "globals": "^17.14.0",
         "laravel-vite-plugin": "^3.1.0",
         "lodash": "^4.17.19",
         "postcss": "^8.1.14",
@@ -24,8 +28,7 @@
     },
     "dependencies": {
         "@lucide/vue": "^1.48.0",
-        "mitt": "^3.0.1",
-        "vue-router": "^4.5.3",
-        "vuex": "^4.0.5"
+        "pinia": "^3.0.4",
+        "vue-router": "^4.5.3"
     }
 }

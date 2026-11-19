@@ -3,12 +3,12 @@ import './bootstrap';
 import '../css/app.css';
 import { createApp } from 'vue';
 import router from './router';
-import store from './store';
+import { pinia } from './stores';
 import App from './App.vue';
 
 const app = createApp(App);
 
 app.use(router);
-app.use(store);
+app.use(pinia);
 
 app.mount('#app');
