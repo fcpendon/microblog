@@ -27,7 +27,7 @@ Route::post('/email/verification-notification', [EmailVerificationController::cl
 
 Route::group(['middleware' => ['auth:sanctum', 'verified']], function() {
     Route::get('/search-user', [UserController::class, 'search']);
-    Route::get('/profiles/{user}', [UserController::class, 'get_profile']);
+    Route::get('/profiles/{user:username}', [UserController::class, 'get_profile']);
     Route::post('/settings/details', [SettingsController::class, 'update_details']);
     Route::post('/settings/password', [SettingsController::class, 'update_password']);
     Route::post('/settings/upload-avatar', [SettingsController::class, 'upload_avatar']);

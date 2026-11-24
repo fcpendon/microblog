@@ -16,19 +16,11 @@ const form = reactive({
 });
 const { formElement, validateForm } = useFormValidation(form);
 const { objectUrl: imagePreview, resetObjectUrl, setObjectUrlFromFile } = useObjectUrl(form.oldImage || null);
+const imageInput = ref(null);
 const disablePost = ref(false);
 const isUpdate = computed(() => Boolean(props.post));
 const charsEntered = computed(() => form.content.length);
 const charsTotal = 150;
-const validationRules = {
-  content: [required(), maxLength(150)],
-  ...(form.image && {
-    image: [
-      required('Image cannot be empty'),
-      fileSize(5_000_000, 'Image file size must be less than 5 MB.'),
-    ],
-  }),
-};
 
 function clearForm() {
   form.content = '';
@@ -45,16 +37,30 @@ function onChange(file) {
 }
 
 function handleFileImport() {
-  document.querySelector('input[name="image"]')?.click();
+  imageInput.value?.click();
 }
 
 function removeImage() {
   form.image = null;
   form.oldImage = '';
   resetObjectUrl();
+
+  if (imageInput.value) {
+    imageInput.value.value = '';
+  }
 }
 
 async function savePost() {
+  const validationRules = {
+    content: [required(), maxLength(150)],
+    ...(form.image && {
+      image: [
+        required('Image cannot be empty'),
+        fileSize(5_000_000, 'Image file size must be less than 5 MB.'),
+      ],
+    }),
+  };
+
   if (!validateForm(validationRules)) {
     return;
   }
@@ -97,7 +103,7 @@ async function savePost() {
       class="min-h-24 w-full resize-y border-0 bg-transparent p-0 text-base leading-6 text-[var(--color-ink)] outline-none placeholder:text-[var(--color-muted)] focus:ring-0"></textarea>
     <div class="mt-2 flex items-center justify-between border-t border-[var(--color-line)] pt-3">
       <div class="flex items-center gap-2">
-        <input ref="file" class="sr-only" type="file" name="image" accept="image/jpg, image/jpeg, image/png, image/webp"
+        <input ref="imageInput" class="sr-only" type="file" name="image" accept="image/jpg, image/jpeg, image/png, image/webp"
           @change="onChange($event.target.files[0])" />
         <button v-if="!imagePreview" type="button"
           class="inline-flex h-9 items-center gap-2 rounded-full px-3 text-sm font-semibold text-[var(--color-brand)] hover:bg-[var(--color-highlight)]"
