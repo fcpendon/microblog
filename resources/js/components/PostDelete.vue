@@ -33,7 +33,7 @@ async function deletePost() {
     </button>
     <Teleport to="body">
       <div v-if="dialog" class="fixed inset-0 z-[60] grid place-items-center bg-[var(--color-ink)]/45 p-4"
-        @click.self="dialog = false" @keydown.esc="dialog = false">
+        @keydown.esc="dialog = false">
         <section class="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl" role="dialog" aria-modal="true"
           aria-labelledby="delete-post-title">
           <h2 id="delete-post-title" class="m-0 text-lg font-bold text-[var(--color-ink)]">Delete post?</h2>

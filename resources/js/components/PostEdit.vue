@@ -6,10 +6,6 @@ import PostForm from './PostForm.vue';
 defineProps({ post: { type: Object, required: true } });
 const emit = defineEmits(['postsChanged']);
 const dialog = ref(false);
-
-function closeDialog() {
-  dialog.value = false;
-}
 </script>
 
 <template>
@@ -22,10 +18,10 @@ function closeDialog() {
     <Teleport to="body">
       <div v-if="dialog"
         class="fixed inset-0 z-[60] grid place-items-center overflow-y-auto bg-[var(--color-ink)]/45 p-4"
-        @click.self="closeDialog" @keydown.esc="closeDialog">
+        @keydown.esc="dialog = false">
         <section class="my-auto w-full max-w-2xl overflow-hidden rounded-2xl bg-white shadow-2xl" role="dialog"
           aria-modal="true" aria-label="Edit post">
-          <PostForm :post="post" @closeDialog="closeDialog" @postsChanged="emit('postsChanged')" />
+          <PostForm :post="post" @closeDialog="dialog = false" @postsChanged="emit('postsChanged')" />
         </section>
       </div>
     </Teleport>
