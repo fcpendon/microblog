@@ -96,7 +96,7 @@ defineExpose({ addPost });
       <p class="mb-0 mt-1 text-sm text-[var(--color-muted)]">New posts will show up in this feed.</p>
     </div>
     <p v-else-if="!postsHasUnfetched && posts.length"
-      class="pb-8 text-center text-xs font-semibold uppercase tracking-wider text-[var(--color-muted)]">You're all
+      class="py-6 text-center text-xs font-semibold uppercase tracking-wider text-[var(--color-muted)]">You're all
       caught up</p>
     <div v-else-if="errorMessage" class="px-5 py-8 text-center" role="alert">
       <p class="m-0 text-sm text-[var(--color-danger)]">{{ errorMessage }}</p>

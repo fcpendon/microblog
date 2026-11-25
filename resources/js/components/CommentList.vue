@@ -118,9 +118,9 @@ function deleteComment(commentId) {
 
     <div v-if="!isOpen && latestComment" class="mt-3 flex gap-3 break-words text-sm leading-5 text-[var(--color-ink)]">
       <ImagePlaceholder :image="latestComment.author.public_image_path" :max-size="36" />
-      <div class="flex flex-wrap">
+      <div class="min-w-0 flex-1">
         <span class="font-semibold">{{ latestComment.author.name }}</span>
-        <span class="mt-1">{{ latestComment.content }}</span>
+        <p class="mt-1">{{ latestComment.content }}</p>
       </div>
     </div>
 

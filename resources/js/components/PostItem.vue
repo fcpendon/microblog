@@ -10,7 +10,7 @@ const emit = defineEmits(['postUpdated', 'postDeleted']);
 </script>
 
 <template>
-  <article class="mb-4 w-full border-b border-[var(--color-line)] bg-white px-4 py-5 sm:px-6">
+  <article class="w-full border-b border-[var(--color-line)] bg-white px-4 py-5 sm:px-6">
     <div class="flex items-start gap-3.5">
       <RouterLink :to="{ name: 'profile', params: { username: post.author.username } }"
         class="shrink-0 rounded-full focus-visible:outline-offset-4">
