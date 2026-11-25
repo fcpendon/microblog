@@ -26,7 +26,7 @@ class CommentService
             ->withExists([
                 'likers as is_liked' => fn ($query) => $query->where('users.id', Auth::id()),
             ])
-            ->latest()
+            ->oldest()
             ->get();
     }
 

@@ -11,8 +11,8 @@ const auth = useAuthStore();
 const { user } = storeToRefs(auth);
 const postList = ref(null);
 
-function reloadPosts() {
-  postList.value?.reloadPosts();
+function addPost(post) {
+  postList.value?.addPost(post);
 }
 </script>
 
@@ -25,7 +25,7 @@ function reloadPosts() {
         <p class="m-0 text-xs font-bold uppercase tracking-[0.14em] text-[var(--color-brand)]">Your network</p>
         <h1 class="mb-0 mt-1 text-2xl font-bold tracking-tight text-[var(--color-ink)]">Home</h1>
       </header>
-      <PostForm class="border-b border-[var(--color-line)]" @postsChanged="reloadPosts" />
+      <PostForm class="border-b border-[var(--color-line)]" @post-saved="addPost" />
       <PostList ref="postList" />
     </section>
     <aside class="hidden self-start xl:col-start-3 xl:block xl:w-full xl:max-w-[17rem] xl:justify-self-end">

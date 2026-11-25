@@ -16,8 +16,8 @@ const postList = ref(null);
 
 onMounted(loadProfile);
 
-function reloadPosts() {
-  postList.value?.reloadPosts();
+function addPost(post) {
+  postList.value?.addPost(post);
 }
 
 async function loadProfile() {
@@ -47,7 +47,7 @@ async function loadProfile() {
         <h1 class="mb-0 mt-1 text-2xl font-bold tracking-tight text-[var(--color-ink)]">{{ user.name }}</h1>
       </header>
       <PostForm v-if="user?.username === authenticatedUser.username" class="border-b border-[var(--color-line)]"
-        @postsChanged="reloadPosts" />
+        @post-saved="addPost" />
       <PostList ref="postList" :user="user" />
     </section>
   </div>

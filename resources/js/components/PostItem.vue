@@ -1,18 +1,12 @@
 <script setup>
-import { computed } from 'vue';
-import { storeToRefs } from 'pinia';
 import ImagePlaceholder from './ImagePlaceholder.vue';
-import PostComment from './PostComment.vue';
+import CommentList from './CommentList.vue';
 import PostDelete from './PostDelete.vue';
 import PostEdit from './PostEdit.vue';
 import PostLike from './PostLike.vue';
-import { useAuthStore } from '../stores/auth';
 
-const props = defineProps({ post: { type: Object, required: true } });
-const emit = defineEmits(['postDeleted', 'postsChanged']);
-const auth = useAuthStore();
-const { user } = storeToRefs(auth);
-const isOwnPost = computed(() => user.value.username === props.post.author.username);
+defineProps({ post: { type: Object, required: true } });
+const emit = defineEmits(['postUpdated', 'postDeleted']);
 </script>
 
 <template>
@@ -23,22 +17,14 @@ const isOwnPost = computed(() => user.value.username === props.post.author.usern
         <ImagePlaceholder :image="post.author.public_image_path" :maxSize="44" />
       </RouterLink>
       <div class="min-w-0 flex-1">
-        <div class="flex min-w-0 items-start justify-between gap-3">
-          <div class="min-w-0">
-            <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-              <RouterLink :to="{ name: 'profile', params: { username: post.author.username } }"
-                class="truncate text-sm font-bold text-[var(--color-ink)] no-underline hover:underline">{{
-                  post.author.name }}</RouterLink>
-              <RouterLink :to="{ name: 'profile', params: { username: post.author.username } }"
-                class="truncate text-xs text-[var(--color-muted)] no-underline hover:underline">@{{ post.author.username
-                }}</RouterLink>
-            </div>
-            <time class="mt-0.5 block text-xs text-[var(--color-muted)]">{{ post.created_at }}</time>
-          </div>
-          <div v-if="isOwnPost" class="flex shrink-0 items-center gap-1">
-            <PostEdit :post="post" @postsChanged="emit('postsChanged')" />
-            <PostDelete :post="post" @postDeleted="emit('postDeleted')" />
-          </div>
+        <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+          <RouterLink :to="{ name: 'profile', params: { username: post.author.username } }"
+            class="text-sm font-bold text-[var(--color-ink)] no-underline hover:underline">{{
+              post.author.name }}</RouterLink>
+          <RouterLink :to="{ name: 'profile', params: { username: post.author.username } }"
+            class="text-xs text-[var(--color-muted)] no-underline hover:underline">@{{ post.author.username
+            }}</RouterLink>
+          <time class="ml-auto mt-0.5 block text-xs text-[var(--color-muted)]">{{ post.created_at }}</time>
         </div>
         <p class="mb-0 mt-3 whitespace-pre-wrap break-words text-[15px] leading-6 text-[var(--color-ink)]">{{
           post.content }}</p>
@@ -47,11 +33,15 @@ const isOwnPost = computed(() => user.value.username === props.post.author.usern
             class="max-h-[34rem] w-full bg-[var(--color-canvas)] object-contain" :src="image.public_image_path"
             alt="Image attached to post" loading="lazy" />
         </div>
-        <PostComment :post="post">
+        <CommentList :post="post">
           <template #like>
             <PostLike :post="post" />
           </template>
-        </PostComment>
+          <template v-if="post.is_mine" #my-controls>
+            <PostEdit :post="post" @post-updated="emit('postUpdated', $event)" />
+            <PostDelete :post="post" @post-deleted="emit('postDeleted', $event)" />
+          </template>
+        </CommentList>
       </div>
     </div>
   </article>

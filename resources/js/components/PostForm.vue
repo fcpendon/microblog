@@ -7,7 +7,7 @@ import { useNotificationStore } from '../stores/notification';
 import { fileSize, maxLength, required } from '../utils/validationRules';
 
 const props = defineProps({ post: { type: Object, default: null } });
-const emit = defineEmits(['closeDialog', 'postsChanged']);
+const emit = defineEmits(['closeDialog', 'postSaved']);
 const notifications = useNotificationStore();
 const form = reactive({
   content: props.post?.content || '',
@@ -81,12 +81,12 @@ async function savePost() {
       data.append('old_image', form.oldImage);
     }
 
-    await axios.post('/api/posts' + (isUpdate.value ? `/${props.post.id}` : ''), data);
+    const response = await axios.post('/api/posts' + (isUpdate.value ? `/${props.post.id}` : ''), data);
 
     notifications.success((isUpdate.value ? 'Edit' : 'Create') + ' post successful!');
     clearForm();
     emit('closeDialog');
-    emit('postsChanged');
+    emit('postSaved', response.data.data);
   } catch (error) {
     notifications.error(error.response?.data || 'Could not save your post. Please try again.');
   } finally {
@@ -103,8 +103,8 @@ async function savePost() {
       class="min-h-24 w-full resize-y border-0 bg-transparent p-0 text-base leading-6 text-[var(--color-ink)] outline-none placeholder:text-[var(--color-muted)] focus:ring-0"></textarea>
     <div class="mt-2 flex items-center justify-between border-t border-[var(--color-line)] pt-3">
       <div class="flex items-center gap-2">
-        <input ref="imageInput" class="sr-only" type="file" name="image" accept="image/jpg, image/jpeg, image/png, image/webp"
-          @change="onChange($event.target.files[0])" />
+        <input ref="imageInput" class="sr-only" type="file" name="image"
+          accept="image/jpg, image/jpeg, image/png, image/webp" @change="onChange($event.target.files[0])" />
         <button v-if="!imagePreview" type="button"
           class="inline-flex h-9 items-center gap-2 rounded-full px-3 text-sm font-semibold text-[var(--color-brand)] hover:bg-[var(--color-highlight)]"
           @click="handleFileImport">

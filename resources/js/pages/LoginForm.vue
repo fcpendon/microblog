@@ -1,5 +1,4 @@
 <script setup>
-import { Eye, EyeOff } from '@lucide/vue';
 import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useFormValidation } from '../composables/useFormValidation';
@@ -12,7 +11,6 @@ const auth = useAuthStore();
 const notifications = useNotificationStore();
 const form = reactive({ username: '', password: '' });
 const { formElement, validateForm } = useFormValidation(form);
-const showPassword = ref(false);
 const disableLogin = ref(false);
 const validationRules = {
   username: [required('Please enter your username')],
@@ -71,22 +69,16 @@ async function login() {
           <label for="login-username"
             class="mb-1.5 block text-sm font-semibold text-[var(--color-ink)]">Username</label>
           <input id="login-username" v-model="form.username" name="username" type="text" autocomplete="username"
-            autofocus
+            required autofocus
             class="block h-12 w-full rounded-xl border border-[var(--color-line)] px-3 text-sm outline-none focus:border-[var(--color-brand)] focus:ring-2 focus:ring-[var(--color-highlight)]" />
         </div>
         <div>
           <label for="login-password"
             class="mb-1.5 block text-sm font-semibold text-[var(--color-ink)]">Password</label>
           <div class="relative">
-            <input id="login-password" v-model="form.password" name="password"
-              :type="showPassword ? 'text' : 'password'" autocomplete="current-password"
-              class="block h-12 w-full rounded-xl border border-[var(--color-line)] px-3 pr-12 text-sm outline-none focus:border-[var(--color-brand)] focus:ring-2 focus:ring-[var(--color-highlight)]" />
-            <button type="button"
-              class="absolute inset-y-0 right-0 grid w-12 place-items-center text-[var(--color-muted)] hover:text-[var(--color-ink)]"
-              :aria-label="showPassword ? 'Hide password' : 'Show password'" @click="showPassword = !showPassword">
-              <Eye v-if="!showPassword" :size="18" />
-              <EyeOff v-else :size="18" />
-            </button>
+            <input id="login-password" v-model="form.password" name="password" type="password"
+              autocomplete="current-password" required
+              class="block h-12 w-full rounded-xl border border-[var(--color-line)] px-3 text-sm outline-none focus:border-[var(--color-brand)] focus:ring-2 focus:ring-[var(--color-highlight)]" />
           </div>
         </div>
         <p class="-mt-2 text-right text-sm">

@@ -13,7 +13,7 @@ const { isLiked, likeCount, isLoading, toggleLike } = useLike(
 
 <template>
   <button type="button"
-    class="inline-flex h-8 items-center gap-1.5 rounded-full px-2.5 text-xs font-semibold transition-colors disabled:cursor-wait disabled:opacity-60"
+    class="inline-flex h-9 items-center gap-2 rounded-full px-3 text-sm font-semibold transition-colors disabled:cursor-wait disabled:opacity-60"
     :class="isLiked ? 'bg-[var(--color-highlight)] text-[var(--color-brand-dark)]' : 'text-[var(--color-muted)] hover:bg-[var(--color-canvas)] hover:text-[var(--color-brand)]'"
     :aria-label="isLiked ? 'Unlike comment' : 'Like comment'" :aria-pressed="isLiked" :disabled="isLoading"
     @click="toggleLike">
